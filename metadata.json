@@ -1,0 +1,6 @@
+{
+  "name": "QR Master Pro",
+  "description": "Professional QR Code Generator with custom styles, colors, logo support, instant preview, and multi-format export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

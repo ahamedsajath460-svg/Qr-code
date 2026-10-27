@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path name="qr_cache" path="." />
+    <external-cache-path name="external_qr_cache" path="." />
+    <files-path name="qr_files" path="." />
+</paths>

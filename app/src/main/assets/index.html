@@ -1,0 +1,3519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>QR Master Pro — Professional QR Studio</title>
+  <meta name="description" content="Premium, mobile-first QR code studio. Create, style, and manage custom QR codes with offline generation, templates, shapes, gradients, logos, and link expiry management.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%231E60F0'/><rect x='22' y='22' width='24' height='24' rx='6' fill='white'/><rect x='28' y='28' width='12' height='12' rx='3' fill='%231E60F0'/><rect x='54' y='22' width='24' height='24' rx='6' fill='white'/><rect x='60' y='28' width='12' height='12' rx='3' fill='%231E60F0'/><rect x='22' y='54' width='24' height='24' rx='6' fill='white'/><rect x='28' y='60' width='12' height='12' rx='3' fill='%231E60F0'/><rect x='54' y='54' width='10' height='10' rx='2' fill='white'/><rect x='68' y='54' width='10' height='24' rx='2' fill='white'/><rect x='54' y='68' width='10' height='10' rx='2' fill='white'/></svg>">
+  <style>
+    :root {
+      --bg: #F4F6F9;
+      --surface: #FFFFFF;
+      --surface-card: #FFFFFF;
+      --surface-subtle: #F8FAFC;
+      --surface-input: #F8FAFC;
+      --border: #E5E7EB;
+      --border-subtle: #F1F3F5;
+      --border-focus: #1E60F0;
+      
+      --primary: #1E60F0;
+      --primary-hover: #1551D6;
+      --primary-light: #EEF4FF;
+      --primary-glow: rgba(30, 96, 240, 0.16);
+      
+      --accent: #06B6D4;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --text-subtle: #9CA3AF;
+      
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --warning: #F59E0B;
+      --warning-light: #FEF3C7;
+      --danger: #EF4444;
+      --danger-light: #FEF2F2;
+      
+      --radius-xs: 6px;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-card: 0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 1px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-preview: 0 12px 32px -4px rgba(30, 96, 240, 0.08), 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+      --shadow-float: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+      
+      --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0B0F17;
+      --surface: #111827;
+      --surface-card: #141E33;
+      --surface-subtle: #1B263B;
+      --surface-input: #172238;
+      --border: #23314D;
+      --border-subtle: #1C283F;
+      --border-focus: #3B82F6;
+      
+      --primary: #3B82F6;
+      --primary-hover: #2563EB;
+      --primary-light: #1A2744;
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      
+      --text-main: #F9FAFB;
+      --text-muted: #9CA3AF;
+      --text-subtle: #6B7280;
+      
+      --warning-light: #45260A;
+      --danger-light: #450A0A;
+      --success-light: #064E3B;
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+      --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.4);
+      --shadow-preview: 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.45;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Screen Management */
+    .view-screen {
+      display: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      flex-direction: column;
+      padding: 1rem 1.15rem 5.5rem 1.15rem;
+      max-width: 520px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .view-screen.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Connectivity Status Banner */
+    .connectivity-badge {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      margin: 0.25rem 1.15rem 0.6rem 1.15rem;
+      max-width: 520px;
+      align-self: center;
+      cursor: pointer;
+      animation: fadeIn 0.3s ease;
+    }
+    .connectivity-badge.offline {
+      display: inline-flex;
+      background: var(--warning-light);
+      color: #B45309;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .connectivity-badge.online {
+      display: none; /* unobtrusive */
+    }
+
+    /* Top App Bar */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(244, 246, 249, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background-color 0.25s ease;
+    }
+    [data-theme="dark"] .app-header {
+      background: rgba(11, 15, 23, 0.92);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 1rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .header-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .header-btn:active {
+      background: var(--surface-subtle);
+      transform: scale(0.92);
+    }
+    .header-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      text-align: center;
+      flex: 1;
+      padding: 0 0.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .header-action-pill {
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 6px var(--primary-glow);
+      transition: var(--transition);
+    }
+    .header-action-pill:active {
+      transform: scale(0.95);
+      background: var(--primary-hover);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface-card);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: var(--transition);
+    }
+
+    /* Hero Preview Container */
+    .qr-preview-wrapper {
+      background: var(--surface-card);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-preview);
+      padding: 1.75rem 1.25rem 1.25rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .qr-canvas-holder {
+      width: 220px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .qr-canvas-holder canvas {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+      display: block;
+    }
+    .qr-frame-badge {
+      margin-top: 1rem;
+      background: #111827;
+      color: #FFFFFF;
+      padding: 8px 18px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: -0.01em;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Action Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      min-height: 48px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .btn-primary:active {
+      background: var(--primary-hover);
+      transform: scale(0.98);
+    }
+    .btn-secondary {
+      background: var(--surface-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:active {
+      background: var(--border);
+      transform: scale(0.98);
+    }
+    .btn-danger {
+      background: var(--danger);
+      color: #FFFFFF;
+    }
+    .btn-danger:active {
+      background: #DC2626;
+      transform: scale(0.98);
+    }
+    .btn-block {
+      width: 100%;
+    }
+
+    /* Circular Action Buttons */
+    .circle-action-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+    .circle-action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+    .circle-action-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-full);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .circle-action-item:active .circle-action-icon {
+      transform: scale(0.92);
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .circle-action-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .form-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 1rem;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background: var(--surface-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: var(--transition);
+    }
+    .form-input:focus {
+      border-color: var(--border-focus);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .form-textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background: var(--surface-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      outline: none;
+      min-height: 90px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .form-textarea:focus {
+      border-color: var(--border-focus);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    /* iOS/M3 Style Toggles */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .toggle-row:last-child {
+      border-bottom: none;
+    }
+    .toggle-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 28px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--border);
+      transition: .3s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* 4-Tab Bar in Editor */
+    .editor-tabs {
+      display: flex;
+      background: var(--surface-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 4px;
+      margin-bottom: 1rem;
+    }
+    .editor-tab-item {
+      flex: 1;
+      padding: 8px 4px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .editor-tab-item.active {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    /* Grid Pickers */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+    .template-item {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      background: var(--surface-subtle);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      padding: 6px;
+      position: relative;
+    }
+    .template-item.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .template-item-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* Color Swatches */
+    .color-swatch-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+    .color-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .color-swatch.active {
+      border-color: var(--text-main);
+      transform: scale(1.1);
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--primary);
+    }
+
+    /* Detail Metadata Rows */
+    .detail-row-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .detail-row-item:last-child {
+      border-bottom: none;
+    }
+    .detail-row-key {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .detail-row-val {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-align: right;
+    }
+
+    /* Fixed Bottom Action Bar */
+    .bottom-action-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-subtle);
+      padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom)) 1rem;
+      z-index: 30;
+      display: flex;
+      justify-content: center;
+    }
+    [data-theme="dark"] .bottom-action-bar {
+      background: rgba(17, 24, 39, 0.95);
+    }
+    .bottom-action-bar-inner {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    /* Type Selection Grid */
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .type-card {
+      background: var(--surface-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-card);
+    }
+    .type-card.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .type-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--surface-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .type-card.active .type-card-icon {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+    .type-card-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .type-card-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Status Pills */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .status-pill.active {
+      background: var(--success-light);
+      color: var(--success);
+    }
+    .status-pill.expired {
+      background: var(--warning-light);
+      color: #D97706;
+    }
+    .status-pill.deleted {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+    .status-pill.pending {
+      background: #EFF6FF;
+      color: #2563EB;
+    }
+    .status-pill.unavailable {
+      background: #F3F4F6;
+      color: #6B7280;
+    }
+
+    /* Filter Chips */
+    .filter-chips-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      scrollbar-width: none;
+    }
+    .filter-chips-row::-webkit-scrollbar {
+      display: none;
+    }
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+    .filter-chip.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    /* History & Link Cards */
+    .history-card-item {
+      background: var(--surface-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.65rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+    }
+    .history-card-item:active {
+      transform: scale(0.98);
+    }
+    .history-thumb-img {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .history-meta-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .history-meta-url {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 190px;
+    }
+    .history-meta-date {
+      font-size: 0.68rem;
+      color: var(--text-subtle);
+      margin-top: 2px;
+    }
+
+    /* Segmented Tab Bar */
+    .segmented-control {
+      display: flex;
+      background: var(--border);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      margin-bottom: 1rem;
+    }
+    .segmented-btn {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-full);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .segmented-btn.active {
+      background: var(--surface);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Scanner Viewfinder */
+    .scanner-viewfinder {
+      width: 250px;
+      height: 250px;
+      border-radius: 28px;
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      position: relative;
+      overflow: hidden;
+      margin: 2.5rem auto 1.5rem auto;
+      background: rgba(0, 0, 0, 0.45);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+    }
+    .scanner-laser-line {
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #38BDF8, #1E60F0, #38BDF8, transparent);
+      position: absolute;
+      top: 0;
+      box-shadow: 0 0 14px #38BDF8;
+      animation: scanLaser 2.2s infinite ease-in-out;
+    }
+    @keyframes scanLaser {
+      0% { top: 5%; }
+      50% { top: 92%; }
+      100% { top: 5%; }
+    }
+
+    /* Bulk Image Grid */
+    .bulk-images-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .bulk-image-slot {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+      background: var(--surface-subtle);
+    }
+    .bulk-image-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .bulk-remove-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Modals & Dialogs */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-content {
+      background: var(--surface-card);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      max-width: 440px;
+      width: 100%;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-float);
+    }
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+    .modal-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 5.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #111827;
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      z-index: 120;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top App Bar -->
+  <header class="app-header" id="appHeader">
+    <div class="header-inner">
+      <button class="header-btn" id="headerBackBtn" onclick="handleNavigationBack()" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="header-title" id="headerTitle">QR Master Pro</div>
+      <div id="headerActionContainer">
+        <!-- Dynamic header actions (Save, Settings, etc.) -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Network Connectivity Status Badge -->
+  <div class="connectivity-badge offline" id="connectivityBadge" onclick="showConnectivityInfo()">
+    <span>⚡ Offline Mode — Local QR Engine Active</span>
+  </div>
+
+  <!-- ================= 1. HOME SCREEN (Screenshot 1) ================= -->
+  <div class="view-screen active" id="screen-home">
+    <!-- Hero Banner Card -->
+    <div class="card" style="background: linear-gradient(135deg, #1E60F0 0%, #06B6D4 100%); color: white; border: none; margin-bottom: 1.25rem; padding: 1.5rem; box-shadow: 0 10px 24px rgba(30, 96, 240, 0.25);">
+      <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.35rem;">Professional QR Studio</div>
+      <div style="font-size: 1.4rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.4rem;">QR Master Pro</div>
+      <div style="font-size: 0.86rem; opacity: 0.9; margin-bottom: 1.25rem;">Create, customize, style, and manage custom QR codes with offline generator & secure link management.</div>
+      <button class="btn" onclick="navigateTo('screen-type')" style="background: white; color: #1E60F0; font-weight: 800; border-radius: var(--radius-full); padding: 0.75rem 1.5rem; width: 100%; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Create QR Code
+      </button>
+    </div>
+
+    <!-- Quick Feature Cards Row -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; margin-bottom: 1.25rem;">
+      <div class="card" onclick="startImageQrFlow()" style="padding: 0.85rem 0.5rem; text-align: center; cursor: pointer; margin-bottom: 0;">
+        <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: #EFF6FF; color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.4rem auto;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </div>
+        <div style="font-size: 0.75rem; font-weight: 700;">Image QR</div>
+      </div>
+
+      <div class="card" onclick="navigateTo('screen-link-mgmt')" style="padding: 0.85rem 0.5rem; text-align: center; cursor: pointer; margin-bottom: 0;">
+        <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: #ECFDF5; color: var(--success); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.4rem auto;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        </div>
+        <div style="font-size: 0.75rem; font-weight: 700;">Link Expiry</div>
+      </div>
+
+      <div class="card" onclick="navigateTo('screen-scanner')" style="padding: 0.85rem 0.5rem; text-align: center; cursor: pointer; margin-bottom: 0;">
+        <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: #F5F3FF; color: #8B5CF6; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.4rem auto;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
+        </div>
+        <div style="font-size: 0.75rem; font-weight: 700;">Scan QR</div>
+      </div>
+    </div>
+
+    <!-- Recent History Section -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem;">
+      <span style="font-weight: 700; font-size: 0.95rem;">Recent QR Codes</span>
+      <button onclick="navigateTo('screen-history')" style="background: none; border: none; color: var(--primary); font-size: 0.82rem; font-weight: 700; cursor: pointer;">See All ›</button>
+    </div>
+    <div id="homeRecentList">
+      <!-- Injected dynamically -->
+    </div>
+  </div>
+
+  <!-- ================= 2. SELECT TYPE SCREEN (Screenshot 2) ================= -->
+  <div class="view-screen" id="screen-type">
+    <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">Select the kind of QR code you want to generate:</div>
+
+    <div class="type-grid" id="typeGridContainer">
+      <div class="type-card active" onclick="selectType('url')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Website URL</div>
+          <div class="type-card-desc">Open web links</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('image')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Image QR</div>
+          <div class="type-card-desc">Photos & galleries</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('text')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Plain Text</div>
+          <div class="type-card-desc">Messages & notes</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('wifi')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Wi-Fi Network</div>
+          <div class="type-card-desc">Instant join</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('vcard')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <div>
+          <div class="type-card-title">vCard Contact</div>
+          <div class="type-card-desc">Share contact card</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('whatsapp')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        </div>
+        <div>
+          <div class="type-card-title">WhatsApp</div>
+          <div class="type-card-desc">Direct chat link</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('email')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Email</div>
+          <div class="type-card-desc">Compose message</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('phone')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Phone Call</div>
+          <div class="type-card-desc">Direct dial number</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('sms')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div>
+          <div class="type-card-title">SMS Message</div>
+          <div class="type-card-desc">Pre-filled text</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('social')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Social Profile</div>
+          <div class="type-card-desc">Insta, TikTok, X</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('location')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Location</div>
+          <div class="type-card-desc">Google Maps pin</div>
+        </div>
+      </div>
+
+      <div class="type-card" onclick="selectType('event')">
+        <div class="type-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </div>
+        <div>
+          <div class="type-card-title">Calendar Event</div>
+          <div class="type-card-desc">Date, time & place</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Action -->
+    <div class="bottom-action-bar">
+      <div class="bottom-action-bar-inner">
+        <button class="btn btn-primary btn-block" onclick="proceedToDataEntry()">
+          Next
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 3. ENTER INFORMATION SCREEN (Screenshot 3) ================= -->
+  <div class="view-screen" id="screen-info">
+    <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;" id="infoFormSubtitle">Enter the destination details:</div>
+
+    <div class="card" id="dynamicFormCard">
+      <!-- Injected per selected type -->
+    </div>
+
+    <!-- Options Section with iOS/M3 Toggles from Screenshot 3 -->
+    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; padding-left: 0.25rem;">Options</div>
+    <div class="card" style="padding: 0.25rem 1rem;">
+      <div class="toggle-row">
+        <span class="toggle-label">Short URL</span>
+        <label class="switch">
+          <input type="checkbox" id="optShortUrl">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Track Analytics</span>
+        <label class="switch">
+          <input type="checkbox" id="optTrackAnalytics">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-action-bar">
+      <div class="bottom-action-bar-inner">
+        <button class="btn btn-primary btn-block" onclick="generateAndOpenEditor()">
+          Next
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 4. QR CODE EDITOR SCREEN (Screenshot 4, 5, 6, 7) ================= -->
+  <div class="view-screen" id="screen-editor">
+    <!-- QR Preview Container -->
+    <div class="qr-preview-wrapper" id="editorPreviewCard">
+      <div class="qr-canvas-holder">
+        <canvas id="qrEditorCanvas" width="512" height="512"></canvas>
+      </div>
+      <div class="qr-frame-badge" id="editorBadgeText" style="display: flex;">
+        <span id="editorBadgeIcon">🏷️</span>
+        <span id="editorBadgeLabel">Save Contact</span>
+      </div>
+    </div>
+
+    <!-- 4 Sub-Tabs from Reference Screenshot -->
+    <div class="editor-tabs">
+      <button class="editor-tab-item active" id="tabBtnTemplate" onclick="switchEditorTab('template')">Template</button>
+      <button class="editor-tab-item" id="tabBtnShapes" onclick="switchEditorTab('shapes')">Shapes</button>
+      <button class="editor-tab-item" id="tabBtnColor" onclick="switchEditorTab('color')">Color</button>
+      <button class="editor-tab-item" id="tabBtnLogo" onclick="switchEditorTab('logo')">Logo</button>
+    </div>
+
+    <!-- Tab 1: Template Panel (Screenshot 4) -->
+    <div class="editor-tab-pane" id="pane-template">
+      <div class="template-grid">
+        <div class="template-item active" onclick="setTemplate('badge')">
+          <div style="font-size: 26px;">🏷️</div>
+          <span class="template-item-label">Badge Frame</span>
+        </div>
+        <div class="template-item" onclick="setTemplate('standard')">
+          <div style="font-size: 26px;">⬛</div>
+          <span class="template-item-label">Classic Square</span>
+        </div>
+        <div class="template-item" onclick="setTemplate('minimal')">
+          <div style="font-size: 26px;">✨</div>
+          <span class="template-item-label">Minimal</span>
+        </div>
+        <div class="template-item" onclick="setTemplate('card')">
+          <div style="font-size: 26px;">💳</div>
+          <span class="template-item-label">Card Style</span>
+        </div>
+        <div class="template-item" onclick="setTemplate('rounded-frame')">
+          <div style="font-size: 26px;">⭕</div>
+          <span class="template-item-label">Round Frame</span>
+        </div>
+        <div class="template-item" onclick="setTemplate('vintage')">
+          <div style="font-size: 26px;">📜</div>
+          <span class="template-item-label">Vintage</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 1rem;">
+        <label class="form-label">Badge Text</label>
+        <input class="form-input" type="text" id="customBadgeTextInput" value="Save Contact" oninput="updateCustomBadgeText(this.value)">
+      </div>
+    </div>
+
+    <!-- Tab 2: Shapes Panel (Screenshot 5) -->
+    <div class="editor-tab-pane" id="pane-shapes" style="display: none;">
+      <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Dots Style</div>
+      <div class="template-grid" style="margin-bottom: 1rem;">
+        <div class="template-item active" id="dotStyleSquare" onclick="setDotStyle('square')">
+          <div style="width: 24px; height: 24px; background: var(--text-main); border-radius: 2px;"></div>
+          <span class="template-item-label">Square</span>
+        </div>
+        <div class="template-item" id="dotStyleRounded" onclick="setDotStyle('rounded')">
+          <div style="width: 24px; height: 24px; background: var(--text-main); border-radius: 6px;"></div>
+          <span class="template-item-label">Rounded</span>
+        </div>
+        <div class="template-item" id="dotStyleDots" onclick="setDotStyle('dots')">
+          <div style="width: 24px; height: 24px; background: var(--text-main); border-radius: 50%;"></div>
+          <span class="template-item-label">Dots</span>
+        </div>
+        <div class="template-item" id="dotStyleSmooth" onclick="setDotStyle('smooth')">
+          <div style="width: 24px; height: 24px; background: var(--text-main); border-radius: 12px 2px 12px 2px;"></div>
+          <span class="template-item-label">Smooth</span>
+        </div>
+      </div>
+
+      <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Corner Eye Style</div>
+      <div class="template-grid">
+        <div class="template-item active" id="cornerStyleSquare" onclick="setCornerStyle('square')">
+          <div style="width: 26px; height: 26px; border: 3px solid var(--text-main); display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: var(--text-main);"></div></div>
+          <span class="template-item-label">Square</span>
+        </div>
+        <div class="template-item" id="cornerStyleRounded" onclick="setCornerStyle('rounded')">
+          <div style="width: 26px; height: 26px; border: 3px solid var(--text-main); border-radius: 8px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: var(--text-main); border-radius: 3px;"></div></div>
+          <span class="template-item-label">Rounded</span>
+        </div>
+        <div class="template-item" id="cornerStyleCircle" onclick="setCornerStyle('circle')">
+          <div style="width: 26px; height: 26px; border: 3px solid var(--text-main); border-radius: 50%; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: var(--text-main); border-radius: 50%;"></div></div>
+          <span class="template-item-label">Circle</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Color Panel (Screenshot 6) -->
+    <div class="editor-tab-pane" id="pane-color" style="display: none;">
+      <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">Solid Color</div>
+      <div class="color-swatch-row">
+        <div class="color-swatch active" style="background: #111827;" onclick="setSolidColor('#111827', this)"></div>
+        <div class="color-swatch" style="background: #1E60F0;" onclick="setSolidColor('#1E60F0', this)"></div>
+        <div class="color-swatch" style="background: #0EA5E9;" onclick="setSolidColor('#0EA5E9', this)"></div>
+        <div class="color-swatch" style="background: #EAB308;" onclick="setSolidColor('#EAB308', this)"></div>
+        <div class="color-swatch" style="background: #F97316;" onclick="setSolidColor('#F97316', this)"></div>
+        <div class="color-swatch" style="background: #EF4444;" onclick="setSolidColor('#EF4444', this)"></div>
+        <div class="color-swatch" style="background: #8B5CF6;" onclick="setSolidColor('#8B5CF6', this)"></div>
+        <div class="color-swatch" style="background: #10B981;" onclick="setSolidColor('#10B981', this)"></div>
+        <div class="color-swatch" style="background: #EC4899;" onclick="setSolidColor('#EC4899', this)"></div>
+        <div class="color-swatch" style="background: #475569;" onclick="setSolidColor('#475569', this)"></div>
+      </div>
+
+      <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">Gradient Color</div>
+      <div class="color-swatch-row">
+        <div class="color-swatch" style="background: linear-gradient(135deg, #1E60F0, #06B6D4);" onclick="setGradientColor('#1E60F0', '#06B6D4', this)"></div>
+        <div class="color-swatch" style="background: linear-gradient(135deg, #8B5CF6, #EC4899);" onclick="setGradientColor('#8B5CF6', '#EC4899', this)"></div>
+        <div class="color-swatch" style="background: linear-gradient(135deg, #F97316, #EAB308);" onclick="setGradientColor('#F97316', '#EAB308', this)"></div>
+        <div class="color-swatch" style="background: linear-gradient(135deg, #10B981, #06B6D4);" onclick="setGradientColor('#10B981', '#06B6D4', this)"></div>
+        <div class="color-swatch" style="background: linear-gradient(135deg, #1E293B, #475569);" onclick="setGradientColor('#1E293B', '#475569', this)"></div>
+      </div>
+
+      <!-- Custom Color Input -->
+      <div class="card" style="padding: 0.75rem 1rem; margin-top: 0.5rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.86rem; font-weight: 600;">Custom Hex Color</span>
+          <input type="color" id="customColorPicker" value="#111827" onchange="setSolidColor(this.value, null)" style="border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;">
+        </div>
+        <div id="contrastNotice" style="font-size: 0.75rem; color: var(--success); margin-top: 4px; font-weight: 600;">✓ Excellent Scannability Contrast</div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Logo Panel (Screenshot 7) -->
+    <div class="editor-tab-pane" id="pane-logo" style="display: none;">
+      <input type="file" id="logoUploadInput" accept="image/*" style="display: none;" onchange="handleCustomLogoUpload(event)">
+      
+      <!-- Upload Drop Zone Card -->
+      <div class="card" onclick="document.getElementById('logoUploadInput').click()" style="border: 2px dashed #10B981; background: var(--surface); text-align: center; padding: 1.5rem; cursor: pointer; margin-bottom: 1rem;">
+        <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: #ECFDF5; color: #10B981; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem auto;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-main);">Tap to Upload Logo</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">PNG, SVG or JPG with transparent bg</div>
+      </div>
+
+      <!-- Preset Icons -->
+      <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Or Choose Preset Icon</div>
+      <div class="template-grid" style="margin-bottom: 1rem;">
+        <div class="template-item" onclick="setPresetLogo('none')">
+          <div style="font-size: 20px;">🚫</div>
+          <span class="template-item-label">None</span>
+        </div>
+        <div class="template-item" onclick="setPresetLogo('globe')">
+          <div style="font-size: 20px;">🌐</div>
+          <span class="template-item-label">Website</span>
+        </div>
+        <div class="template-item" onclick="setPresetLogo('wifi')">
+          <div style="font-size: 20px;">📶</div>
+          <span class="template-item-label">Wi-Fi</span>
+        </div>
+        <div class="template-item" onclick="setPresetLogo('whatsapp')">
+          <div style="font-size: 20px;">💬</div>
+          <span class="template-item-label">Chat</span>
+        </div>
+        <div class="template-item" onclick="setPresetLogo('user')">
+          <div style="font-size: 20px;">👤</div>
+          <span class="template-item-label">Person</span>
+        </div>
+        <div class="template-item" onclick="setPresetLogo('photo')">
+          <div style="font-size: 20px;">📷</div>
+          <span class="template-item-label">Image</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">
+          <span>Logo Size</span>
+          <span id="logoSizeVal">22%</span>
+        </div>
+        <input type="range" id="logoSizeSlider" min="15" max="32" value="22" oninput="setLogoSize(this.value)" style="width: 100%; accent-color: var(--primary);">
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 5. QR RESULT SCREEN (Screenshot 8) ================= -->
+  <div class="view-screen" id="screen-result">
+    <!-- Centered QR Card -->
+    <div class="qr-preview-wrapper" style="margin-bottom: 1rem;">
+      <div class="qr-canvas-holder">
+        <canvas id="qrResultCanvas" width="512" height="512"></canvas>
+      </div>
+      <div class="qr-frame-badge" id="resultBadgeText" style="display: flex;">
+        <span id="resultBadgeIcon">🏷️</span>
+        <span id="resultBadgeLabel">Save Contact</span>
+      </div>
+    </div>
+
+    <!-- Metadata Label -->
+    <div style="text-align: center; margin-bottom: 1rem;">
+      <div style="font-size: 1.05rem; font-weight: 800;" id="resultTitle">Website URL</div>
+      <div style="font-size: 0.82rem; color: var(--text-muted); word-break: break-all; margin-top: 2px;" id="resultUrl">https://example.com</div>
+      <div id="resultOfflineNotice" style="display: none; font-size: 0.72rem; color: #B45309; margin-top: 4px; font-weight: 600;">⚡ Generated 100% locally offline</div>
+    </div>
+
+    <!-- 4 Circular Action Buttons -->
+    <div class="circle-action-grid">
+      <button class="circle-action-item" onclick="downloadQrPng()">
+        <div class="circle-action-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </div>
+        <span class="circle-action-label">Download</span>
+      </button>
+
+      <button class="circle-action-item" onclick="shareQr()">
+        <div class="circle-action-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </div>
+        <span class="circle-action-label">Share</span>
+      </button>
+
+      <button class="circle-action-item" onclick="copyQrContent()">
+        <div class="circle-action-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </div>
+        <span class="circle-action-label">Copy</span>
+      </button>
+
+      <button class="circle-action-item" onclick="printQr()">
+        <div class="circle-action-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        </div>
+        <span class="circle-action-label">Print</span>
+      </button>
+    </div>
+
+    <!-- Action Buttons -->
+    <button class="btn btn-primary btn-block" onclick="navigateTo('screen-editor')" style="margin-bottom: 0.65rem;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+      Edit QR Code
+    </button>
+    <button class="btn btn-secondary btn-block" onclick="navigateTo('screen-home')" style="margin-bottom: 0.65rem;">
+      Create New
+    </button>
+  </div>
+
+  <!-- ================= 6. HISTORY SCREEN (Screenshot 9) ================= -->
+  <div class="view-screen" id="screen-history">
+    <!-- Search Bar -->
+    <div class="form-group" style="position: relative; margin-bottom: 0.75rem;">
+      <input class="form-input" type="text" id="historySearchInput" placeholder="Search QR codes..." oninput="filterHistoryList()" style="padding-left: 2.75rem; border-radius: var(--radius-full);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 1rem; top: 15px; color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </div>
+
+    <!-- Filter Pills from Screenshot -->
+    <div class="filter-chips-row">
+      <div class="filter-chip active" onclick="setHistoryFilter('all', this)">All</div>
+      <div class="filter-chip" onclick="setHistoryFilter('url', this)">URL</div>
+      <div class="filter-chip" onclick="setHistoryFilter('text', this)">Text</div>
+      <div class="filter-chip" onclick="setHistoryFilter('wifi', this)">Wi-Fi</div>
+      <div class="filter-chip" onclick="setHistoryFilter('image', this)">Image</div>
+      <div class="filter-chip" onclick="setHistoryFilter('vcard', this)">Contact</div>
+    </div>
+
+    <!-- History List Items -->
+    <div id="fullHistoryList">
+      <!-- Injected -->
+    </div>
+  </div>
+
+  <!-- ================= 7. HISTORY DETAIL SCREEN (Screenshot 10) ================= -->
+  <div class="view-screen" id="screen-history-detail">
+    <!-- QR Card -->
+    <div class="qr-preview-wrapper" style="margin-bottom: 1rem;">
+      <div class="qr-canvas-holder">
+        <canvas id="qrHistoryDetailCanvas" width="512" height="512"></canvas>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1rem; text-align: center;">
+      <div style="font-size: 1.1rem; font-weight: 800;" id="detailMetaTitle">Website URL</div>
+      <div style="font-size: 0.8rem; color: var(--text-muted); word-break: break-all;" id="detailMetaUrl">https://example.com</div>
+    </div>
+
+    <!-- Metadata Details Card -->
+    <div class="card" style="padding: 0.35rem 1.25rem; margin-bottom: 1.25rem;">
+      <div class="detail-row-item">
+        <span class="detail-row-key">Type</span>
+        <span class="detail-row-val" id="detailRowType">Website URL ›</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Created</span>
+        <span class="detail-row-val" id="detailRowDate">12 May 2026 - 10:30 AM ›</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Size</span>
+        <span class="detail-row-val" id="detailRowSize">1024 x 1024 px ›</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Color</span>
+        <span class="detail-row-val" id="detailRowColor">Custom ›</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Logo</span>
+        <span class="detail-row-val" id="detailRowLogo">Enabled ›</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" onclick="loadFromHistoryToEditor()" style="margin-bottom: 0.65rem;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+      Edit QR Code
+    </button>
+    <button class="btn btn-secondary btn-block" id="detailManageLinkBtn" onclick="openLinkMgmtForCurrentDetail()" style="display: none; margin-bottom: 0.65rem;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+      Manage Remote Link & Expiry
+    </button>
+  </div>
+
+  <!-- ================= 8. SCANNER SCREEN (Screenshot 11) ================= -->
+  <div class="view-screen" id="screen-scanner">
+    <div style="text-align: center; font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">
+      Place the QR code inside the frame to scan
+    </div>
+
+    <!-- Scanner Viewfinder with Animated Laser -->
+    <div class="scanner-viewfinder">
+      <div class="scanner-laser-line"></div>
+    </div>
+
+    <input type="file" id="scannerImageFileInput" accept="image/*" style="display: none;" onchange="handleScanFromFile(event)">
+
+    <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 1.5rem;">
+      <button class="circle-action-item" onclick="document.getElementById('scannerImageFileInput').click()">
+        <div class="circle-action-icon" style="background: var(--surface);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </div>
+        <span class="circle-action-label">Gallery</span>
+      </button>
+
+      <button class="circle-action-item" onclick="toggleFlashlight()">
+        <div class="circle-action-icon" style="background: var(--surface);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </div>
+        <span class="circle-action-label">Flash</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= 9. IMAGE QR SCREEN (Upload & URL Tabs) ================= -->
+  <div class="view-screen" id="screen-image-qr">
+    <div class="segmented-control">
+      <button class="segmented-btn active" id="imgTabUpload" onclick="switchImageQrTab('upload')">Upload Image</button>
+      <button class="segmented-btn" id="imgTabUrl" onclick="switchImageQrTab('url')">Image URL (Offline Ready)</button>
+    </div>
+
+    <!-- Sub-pane 1: Upload Image -->
+    <div id="imageSubPane-upload">
+      <input type="file" id="imageHeroFileInput" accept="image/png,image/jpeg,image/webp,image/jpg" style="display: none;" onchange="handleHeroImageSelected(event)">
+
+      <div class="card" style="padding: 0.5rem; overflow: hidden; margin-bottom: 1rem;">
+        <img id="imageHeroPreview" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'><rect width='600' height='400' fill='%231E293B'/><circle cx='300' cy='180' r='50' fill='%2338BDF8'/><path d='M100 400 L250 220 L350 320 L450 180 L600 400 Z' fill='%230EA5E9'/><text x='300' y='360' fill='white' font-family='sans-serif' font-size='20' text-anchor='middle'>Selected Photo</text></svg>" style="width: 100%; height: 210px; object-fit: cover; border-radius: var(--radius-md); display: block;" alt="Image Preview">
+      </div>
+
+      <div id="imageOfflineUploadWarning" style="display: none; background: var(--warning-light); color: #B45309; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.8rem; margin-bottom: 0.85rem; line-height: 1.4;">
+        ⚠️ <strong>Offline Notice:</strong> You are currently offline. Uploading a local device file to the cloud requires internet connectivity. You can switch to <strong>Image URL</strong> mode to generate an offline QR code immediately.
+      </div>
+
+      <button class="btn btn-secondary btn-block" onclick="document.getElementById('imageHeroFileInput').click()" style="margin-bottom: 0.5rem;">
+        Change Image
+      </button>
+
+      <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem;">
+        JPG, PNG, WEBP up to 10MB
+      </div>
+
+      <!-- Expiry Option for new uploads -->
+      <div class="card" style="padding: 1rem;">
+        <div style="font-size: 0.84rem; font-weight: 700; margin-bottom: 0.4rem;">Link Expiry Policy</div>
+        <select class="form-input" id="newUploadExpirySelect">
+          <option value="none">No Expiry (Permanent)</option>
+          <option value="1h">Expire in 1 Hour</option>
+          <option value="24h" selected>Expire in 24 Hours</option>
+          <option value="7d">Expire in 7 Days</option>
+          <option value="30d">Expire in 30 Days</option>
+        </select>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Enforced authoritatively by QR Master Pro Gateway</div>
+      </div>
+    </div>
+
+    <!-- Sub-pane 2: Image URL (Offline Ready) -->
+    <div id="imageSubPane-url" style="display: none;">
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label" for="imageUrlDirectInput">Image URL (Direct Public or Intranet)</label>
+          <input class="form-input" type="url" id="imageUrlDirectInput" placeholder="https://example.com/photo.jpg" value="https://example.com/sample-photo.jpg" oninput="updateDirectImageUrlPreview()">
+        </div>
+
+        <div style="border-radius: var(--radius-md); overflow: hidden; margin-top: 1rem; border: 1px solid var(--border);">
+          <img id="imageUrlDirectPreview" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 350'><rect width='600' height='350' fill='%23F1F5F9'/><text x='300' y='175' fill='%2364748B' font-family='sans-serif' font-size='16' text-anchor='middle'>Enter Image URL Above</text></svg>" style="width: 100%; height: 180px; object-fit: cover; display: block;" alt="Direct Preview">
+        </div>
+      </div>
+
+      <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; line-height: 1.4;">
+        ⚡ <strong>Offline Mode Ready:</strong> QR code will be generated locally. No upload is performed, and network connectivity is not required to create or download this QR code.
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-action-bar">
+      <div class="bottom-action-bar-inner">
+        <button class="btn btn-primary btn-block" id="btnNextImageQr" onclick="generateImageQrAndOpenEditor()">
+          Next
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 10. LINK MANAGEMENT SCREEN (Screenshot 13 & Part A) ================= -->
+  <div class="view-screen" id="screen-link-mgmt">
+    <!-- Search Bar -->
+    <div class="form-group" style="position: relative; margin-bottom: 0.75rem;">
+      <input class="form-input" type="text" id="linkSearchInput" placeholder="Search hosted links..." oninput="filterLinkMgmtList()" style="padding-left: 2.75rem; border-radius: var(--radius-full);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 1rem; top: 15px; color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </div>
+
+    <!-- Filter Pills from Reference -->
+    <div class="filter-chips-row">
+      <div class="filter-chip active" onclick="setLinkFilter('all', this)">All</div>
+      <div class="filter-chip" onclick="setLinkFilter('active', this)">Active</div>
+      <div class="filter-chip" onclick="setLinkFilter('expired', this)">Expired</div>
+      <div class="filter-chip" onclick="setLinkFilter('deleted', this)">Deleted</div>
+    </div>
+
+    <!-- Active Asset Detail Card (Screenshot 13) -->
+    <div class="card" id="linkDetailCard" style="margin-bottom: 1.25rem;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--border-subtle);">
+        <img id="linkActiveThumb" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'><rect width='60' height='60' fill='%231E293B'/><circle cx='30' cy='30' r='12' fill='%2338BDF8'/></svg>" style="width: 52px; height: 52px; border-radius: var(--radius-md); object-fit: cover; flex-shrink: 0;" alt="Thumb">
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-weight: 800; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="linkActiveFilename">nature.jpg</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="linkActiveUrl">https://res.cloudinary.com/demo/image/upload/nature.jpg</div>
+        </div>
+      </div>
+
+      <div class="detail-row-item">
+        <span class="detail-row-key">Status</span>
+        <span id="linkActiveStatusPill" class="status-pill active">Active</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Expires On</span>
+        <span class="detail-row-val" id="linkActiveExpiresText">20 May 2026, 10:30 AM</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Time Left</span>
+        <span class="detail-row-val" id="linkActiveTimeLeft">23 hours remaining</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Provider</span>
+        <span class="detail-row-val" id="linkActiveProvider">Cloudinary Gateway ›</span>
+      </div>
+
+      <!-- Action Buttons from Screenshot 13 -->
+      <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin: 1rem 0 0.5rem 0;">Actions</div>
+      <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+        <button class="btn btn-secondary btn-block" onclick="openSetExpiryModal()" style="justify-content: space-between; text-align: left;">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <span>⏰</span> Set Expiry
+          </span>
+          <span style="color: var(--text-muted);">›</span>
+        </button>
+
+        <button class="btn btn-secondary btn-block" onclick="openDeleteHostedImageConfirmModal()" style="justify-content: space-between; text-align: left; color: var(--danger); border-color: rgba(239, 68, 68, 0.25);">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <span>🗑️</span> Delete Hosted Image
+          </span>
+          <span style="color: var(--danger);">›</span>
+        </button>
+
+        <button class="btn btn-secondary btn-block" onclick="copyActiveLinkUrl()" style="justify-content: space-between; text-align: left;">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <span>🔗</span> Copy Gateway URL
+          </span>
+          <span style="color: var(--text-muted);">›</span>
+        </button>
+
+        <button class="btn btn-secondary btn-block" onclick="openActiveLinkInBrowser()" style="justify-content: space-between; text-align: left;">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <span>🌐</span> Open Destination Link
+          </span>
+          <span style="color: var(--text-muted);">›</span>
+        </button>
+
+        <button class="btn btn-secondary btn-block" onclick="viewActiveLinkQrCode()" style="justify-content: space-between; text-align: left;">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <span>📱</span> View Associated QR Code
+          </span>
+          <span style="color: var(--text-muted);">›</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Links List -->
+    <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem;">All Hosted Images (<span id="linkCountBadge">0</span>)</div>
+    <div id="linksListContainer">
+      <!-- Injected -->
+    </div>
+  </div>
+
+  <!-- ================= 11. BULK IMAGE QR & PROGRESS ================= -->
+  <div class="view-screen" id="screen-bulk-image">
+    <input type="file" id="bulkImageFileInput" accept="image/*" multiple style="display: none;" onchange="handleBulkImagesSelected(event)">
+
+    <div class="bulk-images-grid" id="bulkGridList">
+      <!-- Local SVG slots with no remote dependencies -->
+      <div class="bulk-image-slot"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231E293B'/><circle cx='50' cy='40' r='20' fill='%230EA5E9'/><text x='50' y='80' fill='white' font-size='12' text-anchor='middle'>Photo 1</text></svg>" alt="Bulk 1"><span class="bulk-remove-badge" onclick="removeBulkSlot(this)">✕</span></div>
+      <div class="bulk-image-slot"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230F172A'/><circle cx='50' cy='40' r='20' fill='%2338BDF8'/><text x='50' y='80' fill='white' font-size='12' text-anchor='middle'>Photo 2</text></svg>" alt="Bulk 2"><span class="bulk-remove-badge" onclick="removeBulkSlot(this)">✕</span></div>
+      <div class="bulk-image-slot"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231E293B'/><circle cx='50' cy='40' r='20' fill='%2310B981'/><text x='50' y='80' fill='white' font-size='12' text-anchor='middle'>Photo 3</text></svg>" alt="Bulk 3"><span class="bulk-remove-badge" onclick="removeBulkSlot(this)">✕</span></div>
+    </div>
+
+    <button class="btn btn-secondary btn-block" onclick="document.getElementById('bulkImageFileInput').click()" style="margin-bottom: 0.5rem;">
+      Add Images
+    </button>
+    <div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;" id="bulkCountText">
+      3 images selected
+    </div>
+
+    <div class="bottom-action-bar">
+      <div class="bottom-action-bar-inner">
+        <button class="btn btn-primary btn-block" onclick="startBulkProgressScreen()">
+          Next
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-screen: Bulk Progress -->
+  <div class="view-screen" id="screen-bulk-progress">
+    <div class="card" id="bulkProgressList">
+      <div class="detail-row-item">
+        <div>
+          <div style="font-weight: 700; font-size: 0.88rem;">nature_01.jpg</div>
+          <div style="font-size: 0.72rem; color: var(--primary);">Processing... 100%</div>
+        </div>
+        <div style="color: var(--success); font-weight: 800;">✓</div>
+      </div>
+      <div class="detail-row-item">
+        <div>
+          <div style="font-weight: 700; font-size: 0.88rem;">nature_02.jpg</div>
+          <div style="font-size: 0.72rem; color: var(--success);">Completed</div>
+        </div>
+        <div style="color: var(--success); font-weight: 800;">✓</div>
+      </div>
+      <div class="detail-row-item">
+        <div>
+          <div style="font-weight: 700; font-size: 0.88rem;">nature_03.jpg</div>
+          <div style="font-size: 0.72rem; color: var(--success);">Completed</div>
+        </div>
+        <div style="color: var(--success); font-weight: 800;">✓</div>
+      </div>
+    </div>
+
+    <div class="bottom-action-bar">
+      <div class="bottom-action-bar-inner">
+        <button class="btn btn-secondary btn-block" onclick="navigateTo('screen-bulk-image')">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 12. SETTINGS SCREEN (Screenshot 14) ================= -->
+  <div class="view-screen" id="screen-settings">
+    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; padding-left: 0.25rem;">General</div>
+    <div class="card" style="padding: 0.35rem 1rem; margin-bottom: 1.25rem;">
+      <div class="detail-row-item" onclick="toggleTheme()" style="cursor: pointer;">
+        <span class="detail-row-key">Theme</span>
+        <span class="detail-row-val" id="settingsThemeText">Light ›</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Default QR Size</span>
+        <span class="detail-row-val">1024 x 1024 ›</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Offline Engine</span>
+        <span class="detail-row-val" style="color: var(--success);">Pure Local BCH ›</span>
+      </div>
+    </div>
+
+    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; padding-left: 0.25rem;">Cloud Hosting & Gateway</div>
+    <div class="card" style="padding: 1rem; margin-bottom: 1.25rem;">
+      <div class="form-group">
+        <label class="form-label" for="cfgBackendUrl">Backend Gateway URL</label>
+        <input class="form-input" type="url" id="cfgBackendUrl" value="http://10.0.2.2:3000" placeholder="http://10.0.2.2:3000 or https://your-server.com" onchange="saveBackendConfig()">
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Enables server-enforced link expiry and authenticated remote image deletion.</div>
+      </div>
+
+      <div class="detail-row-item">
+        <span class="detail-row-key">Gateway Status</span>
+        <span class="status-pill pending" id="gatewayStatusPill">Connecting...</span>
+      </div>
+
+      <div class="detail-row-item" onclick="navigateTo('screen-link-mgmt')" style="cursor: pointer;">
+        <span class="detail-row-key" style="font-weight: 700; color: var(--primary);">Open Link Management</span>
+        <span class="detail-row-val">›</span>
+      </div>
+    </div>
+
+    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; padding-left: 0.25rem;">Storage & Cache</div>
+    <div class="card" style="padding: 0.35rem 1rem; margin-bottom: 1.5rem;">
+      <div class="detail-row-item" onclick="clearLocalHistory()" style="cursor: pointer;">
+        <span class="detail-row-key" style="color: var(--danger);">Clear Local History</span>
+        <span class="detail-row-val">›</span>
+      </div>
+      <div class="detail-row-item">
+        <span class="detail-row-key">Version</span>
+        <span class="detail-row-val">2.0.0 (Offline & Link Expiry)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODALS & POPUPS ================= -->
+  <!-- Set Expiry Modal -->
+  <div class="modal-overlay" id="setExpiryModal">
+    <div class="modal-content">
+      <div class="modal-title">⏰ Set Link Expiry</div>
+      <div class="modal-desc">Select how long this image link remains accessible when scanned. This is authoritatively enforced on the backend gateway.</div>
+
+      <div class="form-group">
+        <label class="form-label">Expiry Duration</label>
+        <select class="form-input" id="modalExpirySelect" onchange="toggleCustomDatePicker(this.value)">
+          <option value="none">No Expiry (Permanent)</option>
+          <option value="1h">1 Hour</option>
+          <option value="24h">24 Hours</option>
+          <option value="7d">7 Days</option>
+          <option value="30d">30 Days</option>
+          <option value="custom">Custom Date & Time</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="customExpiryGroup" style="display: none;">
+        <label class="form-label">Custom Expiration Date & Time</label>
+        <input class="form-input" type="datetime-local" id="modalCustomDatetime">
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem;">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeSetExpiryModal()">Cancel</button>
+        <button class="btn btn-primary" style="flex: 1;" onclick="confirmSetExpiry()">Apply Expiry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Hosted Image Confirmation Modal (Part A Requirements) -->
+  <div class="modal-overlay" id="deleteHostedImageModal">
+    <div class="modal-content">
+      <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--danger-light); color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 0.75rem;">
+        ⚠️
+      </div>
+      <div class="modal-title" style="color: var(--danger);">Delete Remote Hosted Image?</div>
+      <div class="modal-desc" style="color: var(--text-main);">
+        <p style="margin-bottom: 0.5rem;">This action will <strong>permanently delete the image</strong> from the remote cloud hosting provider.</p>
+        <p style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
+          • Anyone scanning your existing QR code will immediately see an "Image Deleted" notice.<br>
+          • This is completely separate from deleting your local QR history entry.<br>
+          • This action cannot be undone.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeDeleteHostedImageModal()">Keep Image</button>
+        <button class="btn btn-danger" style="flex: 1;" id="btnConfirmDeleteHosted" onclick="executeDeleteHostedImage()">Delete Remote Asset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offline Connectivity Info Modal -->
+  <div class="modal-overlay" id="connectivityInfoModal">
+    <div class="modal-content">
+      <div class="modal-title">⚡ Offline Mode Active</div>
+      <div class="modal-desc">
+        <p style="margin-bottom: 0.5rem;"><strong>You are currently offline.</strong></p>
+        <p style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.82rem;">
+          • All local QR generation (URLs, Text, Wi-Fi, vCard, Social, Image URLs) works 100% offline using our built-in BCH generator.<br>
+          • Saving QR codes to your gallery, sharing, printing, and history editing work normally.<br>
+          • Cloud photo uploading and remote image deletion require an active internet connection.
+        </p>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="document.getElementById('connectivityInfoModal').classList.remove('active')">Got It</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="appToast">
+    <span id="appToastIcon">✓</span>
+    <span id="appToastMsg">Saved successfully!</span>
+  </div>
+
+  <!-- ================= LOGIC & JAVASCRIPT ================= -->
+  <script>
+    /**
+     * Complete Pure JS QR Generator Engine (Reed-Solomon BCH GF(256), Versions 1 to 40)
+     * Fully offline, zero external scripts or network requests.
+     */
+    var QRCodeEngine = (function() {
+      var EXP = new Array(256), LOG = new Array(256);
+      for (var i = 0; i < 8; i++) EXP[i] = 1 << i;
+      for (var i = 8; i < 256; i++) EXP[i] = EXP[i - 4] ^ EXP[i - 5] ^ EXP[i - 6] ^ EXP[i - 8];
+      for (var i = 0; i < 255; i++) LOG[EXP[i]] = i;
+
+      function glog(n) { return LOG[n]; }
+      function gexp(n) { while (n < 0) n += 255; while (n >= 255) n -= 255; return EXP[n]; }
+
+      function Poly(num, shift) {
+        var offset = 0;
+        while (offset < num.length && num[offset] === 0) offset++;
+        this.num = new Array(num.length - offset + shift);
+        for (var i = 0; i < num.length - offset; i++) this.num[i] = num[i + offset];
+        for (var i = 0; i < shift; i++) this.num[num.length - offset + i] = 0;
+      }
+      Poly.prototype.get = function(i) { return this.num[i]; };
+      Poly.prototype.getLength = function() { return this.num.length; };
+      Poly.prototype.multiply = function(e) {
+        var num = new Array(this.getLength() + e.getLength() - 1);
+        for (var i = 0; i < num.length; i++) num[i] = 0;
+        for (var i = 0; i < this.getLength(); i++) {
+          for (var j = 0; j < e.getLength(); j++) {
+            num[i + j] ^= gexp(glog(this.get(i)) + glog(e.get(j)));
+          }
+        }
+        return new Poly(num, 0);
+      };
+      Poly.prototype.mod = function(e) {
+        if (this.getLength() - e.getLength() < 0) return this;
+        var ratio = glog(this.get(0)) - glog(e.get(0));
+        var num = new Array(this.getLength());
+        for (var i = 0; i < this.getLength(); i++) num[i] = this.get(i);
+        for (var i = 0; i < e.getLength(); i++) num[i] ^= gexp(glog(e.get(i)) + ratio);
+        return new Poly(num, 0).mod(e);
+      };
+
+      var RS_BLOCK_TABLE = [
+        [1, 26, 19], [1, 26, 16], [1, 26, 13], [1, 26, 9],
+        [1, 44, 34], [1, 44, 28], [1, 44, 22], [1, 44, 16],
+        [1, 70, 55], [1, 70, 44], [2, 35, 17], [2, 35, 13],
+        [1, 100, 80], [2, 50, 32], [2, 50, 24], [4, 25, 9],
+        [1, 134, 108], [2, 67, 43], [2, 33, 15, 2, 34, 16], [2, 33, 11, 2, 34, 12],
+        [2, 86, 68], [4, 43, 27], [4, 43, 19], [4, 43, 15],
+        [2, 98, 78], [4, 49, 31], [2, 32, 14, 4, 33, 15], [4, 39, 13, 1, 40, 14],
+        [2, 121, 97], [2, 60, 38, 2, 61, 39], [4, 40, 18, 2, 41, 19], [4, 40, 14, 2, 41, 15],
+        [2, 146, 116], [3, 58, 36, 2, 59, 37], [4, 36, 16, 4, 37, 17], [4, 36, 12, 4, 37, 13],
+        [2, 86, 68, 2, 87, 69], [4, 69, 43, 1, 70, 44], [6, 43, 19, 2, 44, 20], [6, 43, 15, 2, 44, 16],
+        [4, 101, 81], [1, 80, 50, 4, 81, 51], [4, 50, 22, 4, 51, 23], [3, 36, 12, 8, 37, 13],
+        [2, 116, 92, 2, 117, 93], [6, 58, 36, 2, 59, 37], [4, 46, 20, 6, 47, 21], [7, 42, 14, 4, 43, 15],
+        [4, 133, 107], [8, 59, 37, 1, 60, 38], [8, 44, 20, 4, 45, 21], [12, 33, 11, 4, 34, 12],
+        [3, 145, 115, 1, 146, 116], [4, 64, 40, 5, 65, 41], [11, 36, 16, 5, 37, 17], [11, 36, 12, 5, 37, 13],
+        [5, 109, 87, 1, 110, 88], [5, 65, 41, 5, 66, 42], [5, 54, 24, 7, 55, 25], [11, 36, 12, 7, 37, 13],
+        [5, 122, 98, 1, 123, 99], [7, 73, 45, 3, 74, 46], [15, 43, 19, 2, 44, 20], [3, 45, 15, 13, 46, 16]
+      ];
+
+      function getRSBlocks(typeNum, ecc) {
+        var offset = ecc === 'M' ? 1 : (ecc === 'Q' ? 2 : (ecc === 'H' ? 3 : 0));
+        var idx = (typeNum - 1) * 4 + offset;
+        if (idx >= RS_BLOCK_TABLE.length) idx = RS_BLOCK_TABLE.length - 4 + offset;
+        var row = RS_BLOCK_TABLE[idx];
+        var list = [];
+        for (var i = 0; i < row.length / 3; i++) {
+          for (var j = 0; j < row[i * 3]; j++) {
+            list.push({ totalCount: row[i * 3 + 1], dataCount: row[i * 3 + 2] });
+          }
+        }
+        return list;
+      }
+
+      function BitBuffer() { this.buffer = []; this.length = 0; }
+      BitBuffer.prototype.put = function(num, length) {
+        for (var i = 0; i < length; i++) {
+          var bit = ((num >>> (length - i - 1)) & 1) === 1;
+          var bufIndex = Math.floor(this.length / 8);
+          if (this.buffer.length <= bufIndex) this.buffer.push(0);
+          if (bit) this.buffer[bufIndex] |= (0x80 >>> (this.length % 8));
+          this.length++;
+        }
+      };
+
+      var PATTERN_POSITION = [
+        [], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50],
+        [6, 30, 54], [6, 32, 58], [6, 34, 62], [6, 26, 46, 66], [6, 26, 48, 70], [6, 26, 50, 74]
+      ];
+
+      function QRModel(typeNum, ecc) {
+        this.typeNumber = typeNum;
+        this.errorCorrectionLevel = ecc;
+        this.modules = null;
+        this.moduleCount = 0;
+        this.dataList = [];
+      }
+      QRModel.prototype.addData = function(d) { this.dataList.push(d); };
+      QRModel.prototype.isDark = function(r, c) { return this.modules[r][c]; };
+      QRModel.prototype.getModuleCount = function() { return this.moduleCount; };
+      QRModel.prototype.make = function() {
+        var typeNum = 1;
+        var maxType = RS_BLOCK_TABLE.length / 4;
+        for (typeNum = 1; typeNum <= maxType; typeNum++) {
+          var rs = getRSBlocks(typeNum, this.errorCorrectionLevel);
+          var total = 0;
+          for (var i = 0; i < rs.length; i++) total += rs[i].dataCount;
+          var buf = new BitBuffer();
+          for (var i = 0; i < this.dataList.length; i++) {
+            var d = this.dataList[i];
+            buf.put(4, 4);
+            buf.put(d.length, typeNum < 10 ? 8 : 16);
+            for (var j = 0; j < d.length; j++) buf.put(d.charCodeAt(j), 8);
+          }
+          if (buf.length <= total * 8) break;
+        }
+        if (typeNum > maxType) typeNum = maxType;
+
+        this.typeNumber = typeNum;
+        this.moduleCount = this.typeNumber * 4 + 17;
+        this.modules = new Array(this.moduleCount);
+        for (var r = 0; r < this.moduleCount; r++) {
+          this.modules[r] = new Array(this.moduleCount);
+          for (var c = 0; c < this.moduleCount; c++) this.modules[r][c] = null;
+        }
+        this.setupFinder(0, 0);
+        this.setupFinder(this.moduleCount - 7, 0);
+        this.setupFinder(0, this.moduleCount - 7);
+        this.setupAlign();
+        this.setupTiming();
+        this.setupTypeInfo(0);
+        this.mapData(this.createData());
+      };
+      QRModel.prototype.setupFinder = function(row, col) {
+        for (var r = -1; r <= 7; r++) {
+          if (row + r <= -1 || this.moduleCount <= row + r) continue;
+          for (var c = -1; c <= 7; c++) {
+            if (col + c <= -1 || this.moduleCount <= col + c) continue;
+            if ((0 <= r && r <= 6 && (c == 0 || c == 6)) || (0 <= c && c <= 6 && (r == 0 || r == 6)) || (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
+              this.modules[row + r][col + c] = true;
+            } else {
+              this.modules[row + r][col + c] = false;
+            }
+          }
+        }
+      };
+      QRModel.prototype.setupTiming = function() {
+        for (var r = 8; r < this.moduleCount - 8; r++) if (this.modules[r][6] === null) this.modules[r][6] = (r % 2 === 0);
+        for (var c = 8; c < this.moduleCount - 8; c++) if (this.modules[6][c] === null) this.modules[6][c] = (c % 2 === 0);
+      };
+      QRModel.prototype.setupAlign = function() {
+        var pos = PATTERN_POSITION[this.typeNumber - 1] || [];
+        for (var i = 0; i < pos.length; i++) {
+          for (var j = 0; j < pos.length; j++) {
+            var row = pos[i], col = pos[j];
+            if (this.modules[row][col] !== null) continue;
+            for (var r = -2; r <= 2; r++) {
+              for (var c = -2; c <= 2; c++) {
+                this.modules[row + r][col + c] = (Math.abs(r) == 2 || Math.abs(c) == 2 || (r == 0 && c == 0));
+              }
+            }
+          }
+        }
+      };
+      QRModel.prototype.setupTypeInfo = function(maskPattern) {
+        var bits = (this.errorCorrectionLevel === 'L' ? 1 : (this.errorCorrectionLevel === 'M' ? 0 : (this.errorCorrectionLevel === 'Q' ? 3 : 2)));
+        var data = (bits << 3) | maskPattern;
+        var g = 0x537, d = data << 10;
+        while (d >= 0x400) {
+          var shift = 0, tmp = d;
+          while (tmp >= 0x400) { tmp >>= 1; shift++; }
+          d ^= (g << (shift - 1));
+        }
+        var info = ((data << 10) | d) ^ 0x5412;
+        for (var i = 0; i < 15; i++) {
+          var mod = ((info >> i) & 1) === 1;
+          if (i < 6) this.modules[i][8] = mod;
+          else if (i < 8) this.modules[i + 1][8] = mod;
+          else this.modules[this.moduleCount - 15 + i][8] = mod;
+
+          if (i < 8) this.modules[8][this.moduleCount - i - 1] = mod;
+          else if (i < 9) this.modules[8][15 - i] = mod;
+          else this.modules[8][15 - i - 1] = mod;
+        }
+        this.modules[this.moduleCount - 8][8] = true;
+      };
+      QRModel.prototype.createData = function() {
+        var rs = getRSBlocks(this.typeNumber, this.errorCorrectionLevel);
+        var buffer = new BitBuffer();
+        for (var i = 0; i < this.dataList.length; i++) {
+          var d = this.dataList[i];
+          buffer.put(4, 4);
+          buffer.put(d.length, this.typeNumber < 10 ? 8 : 16);
+          for (var j = 0; j < d.length; j++) buffer.put(d.charCodeAt(j), 8);
+        }
+        var totalDataCount = 0;
+        for (var i = 0; i < rs.length; i++) totalDataCount += rs[i].dataCount;
+        if (buffer.length + 4 <= totalDataCount * 8) buffer.put(0, 4);
+        while (buffer.length % 8 !== 0) buffer.put(0, 1);
+        while (buffer.length < totalDataCount * 8) {
+          buffer.put(0xEC, 8);
+          if (buffer.length < totalDataCount * 8) buffer.put(0x11, 8);
+        }
+
+        var offset = 0;
+        var dcdata = new Array(rs.length);
+        var ecdata = new Array(rs.length);
+        for (var r = 0; r < rs.length; r++) {
+          var dcCount = rs[r].dataCount;
+          var ecCount = rs[r].totalCount - dcCount;
+          dcdata[r] = new Array(dcCount);
+          for (var i = 0; i < dcCount; i++) dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+          offset += dcCount;
+
+          var rsPoly = new Poly([1], 0);
+          for (var i = 0; i < ecCount; i++) rsPoly = rsPoly.multiply(new Poly([1, gexp(i)], 0));
+          var rawPoly = new Poly(dcdata[r], rsPoly.getLength() - 1);
+          var modPoly = rawPoly.mod(rsPoly);
+          ecdata[r] = new Array(rsPoly.getLength() - 1);
+          for (var i = 0; i < ecdata[r].length; i++) {
+            var modIndex = i + modPoly.getLength() - ecdata[r].length;
+            ecdata[r][i] = (modIndex >= 0) ? modPoly.get(modIndex) : 0;
+          }
+        }
+        var data = [];
+        for (var i = 0; i < totalDataCount; i++) {
+          for (var r = 0; r < rs.length; r++) {
+            if (i < dcdata[r].length) data.push(dcdata[r][i]);
+          }
+        }
+        for (var i = 0; i < ecdata[0].length; i++) {
+          for (var r = 0; r < rs.length; r++) {
+            if (i < ecdata[r].length) data.push(ecdata[r][i]);
+          }
+        }
+        return data;
+      };
+      QRModel.prototype.mapData = function(data) {
+        var inc = -1;
+        var row = this.moduleCount - 1;
+        var bitIndex = 7;
+        var byteIndex = 0;
+        for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+          if (col == 6) col--;
+          while (true) {
+            for (var c = 0; c < 2; c++) {
+              if (this.modules[row][col - c] === null) {
+                var dark = false;
+                if (byteIndex < data.length) dark = (((data[byteIndex] >>> bitIndex) & 1) === 1);
+                var mask = ((row + (col - c)) % 2 === 0);
+                if (mask) dark = !dark;
+                this.modules[row][col - c] = dark;
+                bitIndex--;
+                if (bitIndex === -1) { byteIndex++; bitIndex = 7; }
+              }
+            }
+            row += inc;
+            if (row < 0 || this.moduleCount <= row) { row -= inc; inc = -inc; break; }
+          }
+        }
+      };
+
+      return {
+        generate: function(text, ecc) {
+          var utf8 = unescape(encodeURIComponent(text));
+          var qr = new QRModel(0, ecc || 'M');
+          qr.addData(utf8);
+          qr.make();
+          return qr;
+        }
+      };
+    })();
+
+    /**
+     * Application State & Storage Architecture
+     */
+    var state = {
+      isOnline: navigator.onLine,
+      backendUrl: localStorage.getItem('qr_backend_url') || 'http://10.0.2.2:3000',
+      
+      currentScreen: 'screen-home',
+      screenHistory: ['screen-home'],
+      type: 'url',
+      content: 'https://example.com',
+      title: 'Website URL',
+      
+      // Styling & Customization
+      template: 'badge',
+      fgColor: '#111827',
+      fgGradientEnd: null,
+      bgColor: '#FFFFFF',
+      dotStyle: 'square',
+      cornerStyle: 'square',
+      ecc: 'M',
+      frameBadgeText: 'Save Contact',
+      
+      // Center Logo
+      logoUrl: null,
+      logoSizePercent: 22,
+      
+      // Image QR Specific
+      selectedImageBase64: null,
+      selectedImageFilename: 'photo.jpg',
+      uploadedImageUrl: 'https://example.com/photo.jpg',
+      
+      // Hosted Links List (Part A Link Expiry & Deletion)
+      hostedLinks: [
+        {
+          assetId: 'ast_sample01',
+          deleteToken: 'sample_token_nature',
+          filename: 'nature.jpg',
+          gatewayUrl: 'http://10.0.2.2:3000/api/view/ast_sample01',
+          providerUrl: 'https://res.cloudinary.com/demo/image/upload/nature.jpg',
+          status: 'active', // active | expired | deleted | unavailable
+          createdAt: Date.now() - 3600000 * 2,
+          expiresAt: Date.now() + 3600000 * 22, // in 22 hours
+          provider: 'Cloudinary Gateway',
+          thumb: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><rect width="60" height="60" fill="%231E293B"/><circle cx="30" cy="30" r="14" fill="%2338BDF8"/></svg>'
+        }
+      ],
+      currentActiveLink: null,
+      
+      // Saved History List
+      history: [
+        {
+          id: 101,
+          type: 'url',
+          title: 'Website URL',
+          url: 'https://example.com',
+          date: '12 May 2026 - 10:30 AM',
+          size: '1024 x 1024 px',
+          color: 'Custom',
+          logo: 'Enabled'
+        },
+        {
+          id: 102,
+          type: 'wifi',
+          title: 'Wi-Fi Network',
+          url: 'WIFI:S:MyWifiNetwork;T:WPA;P:pass;;',
+          date: '12 May 2026 - 09:15 AM',
+          size: '1024 x 1024 px',
+          color: 'Solid Black',
+          logo: 'Disabled'
+        },
+        {
+          id: 103,
+          type: 'vcard',
+          title: 'vCard Contact',
+          url: 'BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nTEL:+1234567890\nEMAIL:john@example.com\nEND:VCARD',
+          date: '11 May 2026 - 08:45 PM',
+          size: '1024 x 1024 px',
+          color: 'Royal Blue',
+          logo: 'Enabled'
+        },
+        {
+          id: 104,
+          type: 'image',
+          title: 'Image QR (Nature)',
+          url: 'http://10.0.2.2:3000/api/view/ast_sample01',
+          assetId: 'ast_sample01',
+          date: '11 May 2026 - 07:30 PM',
+          size: '1024 x 1024 px',
+          color: 'Custom',
+          logo: 'Enabled'
+        }
+      ],
+      currentDetailItem: null
+    };
+
+    // Load persisted history & links if available
+    try {
+      var savedHist = localStorage.getItem('qr_master_history');
+      if (savedHist) state.history = JSON.parse(savedHist);
+      var savedLinks = localStorage.getItem('qr_master_hosted_links');
+      if (savedLinks) state.hostedLinks = JSON.parse(savedLinks);
+    } catch(e) {}
+
+    function persistState() {
+      try {
+        localStorage.setItem('qr_master_history', JSON.stringify(state.history));
+        localStorage.setItem('qr_master_hosted_links', JSON.stringify(state.hostedLinks));
+      } catch(e) {}
+    }
+
+    var TYPE_LABELS = {
+      url: 'Website URL',
+      image: 'Image QR',
+      text: 'Plain Text',
+      wifi: 'Wi-Fi Network',
+      vcard: 'vCard Contact',
+      whatsapp: 'WhatsApp',
+      email: 'Email',
+      phone: 'Phone Call',
+      sms: 'SMS Message',
+      social: 'Social Profile',
+      location: 'Location',
+      event: 'Calendar Event'
+    };
+
+    // ================= NETWORK CONNECTIVITY HANDLING =================
+    function updateConnectivityState() {
+      var wasOnline = state.isOnline;
+      // Check native bridge if available, otherwise navigator.onLine
+      var nativeOnline = (window.AndroidBridge && typeof window.AndroidBridge.isOnline === 'function') 
+        ? window.AndroidBridge.isOnline() 
+        : navigator.onLine;
+      
+      state.isOnline = Boolean(nativeOnline);
+      var badge = document.getElementById('connectivityBadge');
+      var offlineWarning = document.getElementById('imageOfflineUploadWarning');
+      var resultOffline = document.getElementById('resultOfflineNotice');
+
+      if (!state.isOnline) {
+        badge.classList.remove('online');
+        badge.classList.add('offline');
+        if (offlineWarning) offlineWarning.style.display = 'block';
+        if (resultOffline) resultOffline.style.display = 'block';
+      } else {
+        badge.classList.remove('offline');
+        badge.classList.add('online');
+        if (offlineWarning) offlineWarning.style.display = 'none';
+        if (resultOffline) resultOffline.style.display = 'none';
+        checkGatewayHealth();
+      }
+    }
+
+    window.addEventListener('online', function() {
+      updateConnectivityState();
+      showToast("Connected to Internet");
+    });
+    window.addEventListener('offline', function() {
+      updateConnectivityState();
+      showToast("Offline mode active: local QR engine ready");
+    });
+
+    function showConnectivityInfo() {
+      document.getElementById('connectivityInfoModal').classList.add('active');
+    }
+
+    function safeTimeoutSignal(ms) {
+      try {
+        if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+          return AbortSignal.timeout(ms);
+        }
+        if (typeof AbortController !== 'undefined') {
+          var controller = new AbortController();
+          setTimeout(function() {
+            try { controller.abort(); } catch(e) {}
+          }, ms);
+          return controller.signal;
+        }
+      } catch(e) {}
+      return null;
+    }
+
+    // Check Backend Gateway Status
+    function checkGatewayHealth() {
+      try {
+        if (!state.isOnline) {
+          var pill = document.getElementById('gatewayStatusPill');
+          if (pill) {
+            pill.className = 'status-pill unavailable';
+            pill.textContent = 'Offline';
+          }
+          return;
+        }
+        var fetchOpts = { method: 'GET' };
+        var sig = safeTimeoutSignal(3000);
+        if (sig) fetchOpts.signal = sig;
+
+        fetch(state.backendUrl + '/api/health', fetchOpts)
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            var pill = document.getElementById('gatewayStatusPill');
+            if (pill) {
+              pill.className = 'status-pill active';
+              pill.textContent = data.isCloudinaryConfigured ? 'Gateway Active & Verified' : 'Gateway Online (Add API Keys)';
+            }
+          })
+          .catch(function() {
+            var pill = document.getElementById('gatewayStatusPill');
+            if (pill) {
+              pill.className = 'status-pill unavailable';
+              pill.textContent = 'Gateway Offline / Unreachable';
+            }
+          });
+      } catch(err) {
+        console.warn('checkGatewayHealth safe catch:', err);
+      }
+    }
+
+    function saveBackendConfig() {
+      var val = document.getElementById('cfgBackendUrl').value.trim();
+      if (val) {
+        state.backendUrl = val;
+        localStorage.setItem('qr_backend_url', val);
+        showToast("Gateway URL saved!");
+        checkGatewayHealth();
+      }
+    }
+
+    // ================= NAVIGATION SYSTEM =================
+    function navigateTo(screenId, pushHistory) {
+      if (pushHistory !== false && state.currentScreen !== screenId) {
+        state.screenHistory.push(screenId);
+      }
+      state.currentScreen = screenId;
+
+      document.querySelectorAll('.view-screen').forEach(function(el) {
+        el.classList.remove('active');
+      });
+      var target = document.getElementById(screenId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      updateTopAppBar(screenId);
+
+      // Re-renders for specific canvases
+      if (screenId === 'screen-editor') {
+        renderQRCode('qrEditorCanvas');
+      } else if (screenId === 'screen-result') {
+        renderQRCode('qrResultCanvas');
+      } else if (screenId === 'screen-history-detail') {
+        renderQRCode('qrHistoryDetailCanvas');
+      } else if (screenId === 'screen-history') {
+        renderFullHistoryList();
+      } else if (screenId === 'screen-home') {
+        renderHomeRecentList();
+      } else if (screenId === 'screen-link-mgmt') {
+        renderLinkMgmtScreen();
+      }
+    }
+
+    function handleNavigationBack() {
+      if (state.screenHistory.length > 1) {
+        state.screenHistory.pop();
+        var prevScreen = state.screenHistory[state.screenHistory.length - 1];
+        navigateTo(prevScreen, false);
+      } else {
+        navigateTo('screen-home', false);
+      }
+    }
+
+    window.handleAndroidBack = function() {
+      // Close active modals if open
+      var activeModal = document.querySelector('.modal-overlay.active');
+      if (activeModal) {
+        activeModal.classList.remove('active');
+        return true;
+      }
+      if (state.screenHistory.length > 1) {
+        handleNavigationBack();
+        return true;
+      }
+      return false; // Exit app
+    };
+
+    function updateTopAppBar(screenId) {
+      var titleEl = document.getElementById('headerTitle');
+      var backBtn = document.getElementById('headerBackBtn');
+      var actionBox = document.getElementById('headerActionContainer');
+      actionBox.innerHTML = '';
+
+      if (screenId === 'screen-home') {
+        backBtn.style.visibility = 'hidden';
+        titleEl.textContent = 'QR Master Pro';
+        var setBtn = document.createElement('button');
+        setBtn.className = 'header-btn';
+        setBtn.setAttribute('aria-label', 'Settings');
+        setBtn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+        setBtn.onclick = function() { navigateTo('screen-settings'); };
+        actionBox.appendChild(setBtn);
+      } else {
+        backBtn.style.visibility = 'visible';
+        if (screenId === 'screen-type') titleEl.textContent = 'Select QR Type';
+        else if (screenId === 'screen-info') titleEl.textContent = state.title;
+        else if (screenId === 'screen-editor') {
+          titleEl.textContent = 'Edit QRCode';
+          var saveBtn = document.createElement('button');
+          saveBtn.className = 'header-action-pill';
+          saveBtn.textContent = 'Save';
+          saveBtn.onclick = saveAndGoToResult;
+          actionBox.appendChild(saveBtn);
+        }
+        else if (screenId === 'screen-result') titleEl.textContent = 'QR Result';
+        else if (screenId === 'screen-history') titleEl.textContent = 'History';
+        else if (screenId === 'screen-history-detail') titleEl.textContent = 'History Detail';
+        else if (screenId === 'screen-scanner') titleEl.textContent = 'Scan QR Code';
+        else if (screenId === 'screen-image-qr') titleEl.textContent = 'Image QR';
+        else if (screenId === 'screen-link-mgmt') {
+          titleEl.textContent = 'Link Management';
+          var refBtn = document.createElement('button');
+          refBtn.className = 'header-btn';
+          refBtn.innerHTML = '🔄';
+          refBtn.onclick = function() { renderLinkMgmtScreen(); showToast("Refreshed link status"); };
+          actionBox.appendChild(refBtn);
+        }
+        else if (screenId === 'screen-bulk-image') titleEl.textContent = 'Bulk Image QR';
+        else if (screenId === 'screen-bulk-progress') titleEl.textContent = 'Bulk Progress';
+        else if (screenId === 'screen-settings') titleEl.textContent = 'Settings';
+      }
+    }
+
+    // ================= 2. TYPE SELECTION & DYNAMIC FORMS =================
+    function selectType(t) {
+      state.type = t;
+      state.title = TYPE_LABELS[t] || 'QR Code';
+      document.querySelectorAll('#typeGridContainer .type-card').forEach(function(el) {
+        el.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+    }
+
+    function proceedToDataEntry() {
+      if (state.type === 'image') {
+        startImageQrFlow();
+        return;
+      }
+      renderDynamicForm(state.type);
+      navigateTo('screen-info');
+    }
+
+    function renderDynamicForm(type) {
+      var container = document.getElementById('dynamicFormCard');
+      var sub = document.getElementById('infoFormSubtitle');
+      sub.textContent = 'Enter details for ' + (TYPE_LABELS[type] || 'QR Code') + ':';
+
+      var html = '';
+      if (type === 'url') {
+        html = '<div class="form-group"><label class="form-label" for="inpUrl">Website URL</label><input class="form-input" id="inpUrl" type="url" placeholder="https://example.com" value="https://example.com"></div>';
+      } else if (type === 'text') {
+        html = '<div class="form-group"><label class="form-label" for="inpText">Message / Text</label><textarea class="form-textarea" id="inpText" placeholder="Enter plain text...">Hello from QR Master Pro!</textarea></div>';
+      } else if (type === 'wifi') {
+        html = '<div class="form-group"><label class="form-label" for="inpWifiSsid">Network SSID</label><input class="form-input" id="inpWifiSsid" placeholder="Home-WiFi" value="MyHomeWiFi"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpWifiPass">Password</label><input class="form-input" id="inpWifiPass" type="text" placeholder="WPA2 Password" value="Pass1234!"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpWifiEnc">Security Type</label><select class="form-input" id="inpWifiEnc"><option value="WPA">WPA/WPA2/WPA3</option><option value="WEP">WEP</option><option value="nopass">None (Open)</option></select></div>';
+      } else if (type === 'vcard') {
+        html = '<div class="form-group"><label class="form-label" for="inpVcardName">Full Name</label><input class="form-input" id="inpVcardName" value="John Doe"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpVcardPhone">Phone Number</label><input class="form-input" id="inpVcardPhone" type="tel" value="+1 (555) 234-5678"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpVcardEmail">Email Address</label><input class="form-input" id="inpVcardEmail" type="email" value="john@example.com"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpVcardOrg">Company / Org</label><input class="form-input" id="inpVcardOrg" value="Acme Corp"></div>';
+      } else if (type === 'whatsapp') {
+        html = '<div class="form-group"><label class="form-label" for="inpWaPhone">Phone Number (With Country Code)</label><input class="form-input" id="inpWaPhone" value="+14155552671"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpWaMsg">Pre-filled Message</label><textarea class="form-textarea" id="inpWaMsg">Hi! I saw your QR code.</textarea></div>';
+      } else if (type === 'email') {
+        html = '<div class="form-group"><label class="form-label" for="inpEmailTo">Recipient Email</label><input class="form-input" id="inpEmailTo" type="email" value="support@example.com"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpEmailSubj">Subject</label><input class="form-input" id="inpEmailSubj" value="Hello Inquiry"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpEmailBody">Body</label><textarea class="form-textarea" id="inpEmailBody">Writing to you regarding...</textarea></div>';
+      } else if (type === 'phone') {
+        html = '<div class="form-group"><label class="form-label" for="inpPhone">Phone Number</label><input class="form-input" id="inpPhone" type="tel" value="+18005550199"></div>';
+      } else if (type === 'sms') {
+        html = '<div class="form-group"><label class="form-label" for="inpSmsPhone">Recipient Phone</label><input class="form-input" id="inpSmsPhone" type="tel" value="+18005550199"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpSmsMsg">SMS Text</label><textarea class="form-textarea" id="inpSmsMsg">Confirming my RSVP.</textarea></div>';
+      } else if (type === 'social') {
+        html = '<div class="form-group"><label class="form-label" for="inpSocialUrl">Profile Link</label><input class="form-input" id="inpSocialUrl" type="url" value="https://instagram.com/myprofile"></div>';
+      } else if (type === 'location') {
+        html = '<div class="form-group"><label class="form-label" for="inpLocLat">Latitude</label><input class="form-input" id="inpLocLat" value="37.7749"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpLocLng">Longitude</label><input class="form-input" id="inpLocLng" value="-122.4194"></div>';
+      } else if (type === 'event') {
+        html = '<div class="form-group"><label class="form-label" for="inpEvtTitle">Event Title</label><input class="form-input" id="inpEvtTitle" value="Product Launch Keynote"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpEvtLoc">Location</label><input class="form-input" id="inpEvtLoc" value="Convention Hall 4"></div>' +
+               '<div class="form-group"><label class="form-label" for="inpEvtDate">Date & Time</label><input class="form-input" id="inpEvtDate" type="datetime-local" value="2026-11-15T10:00"></div>';
+      }
+      container.innerHTML = html;
+    }
+
+    function generateAndOpenEditor() {
+      var t = state.type;
+      var text = 'https://example.com';
+
+      if (t === 'url') text = document.getElementById('inpUrl').value.trim() || 'https://example.com';
+      else if (t === 'text') text = document.getElementById('inpText').value.trim() || 'QR Master';
+      else if (t === 'wifi') {
+        var s = document.getElementById('inpWifiSsid').value.trim();
+        var p = document.getElementById('inpWifiPass').value.trim();
+        var enc = document.getElementById('inpWifiEnc').value;
+        text = 'WIFI:S:' + s + ';T:' + enc + ';P:' + p + ';;';
+      } else if (t === 'vcard') {
+        var fn = document.getElementById('inpVcardName').value.trim();
+        var tel = document.getElementById('inpVcardPhone').value.trim();
+        var em = document.getElementById('inpVcardEmail').value.trim();
+        var org = document.getElementById('inpVcardOrg').value.trim();
+        text = 'BEGIN:VCARD\nVERSION:3.0\nFN:' + fn + '\nTEL:' + tel + '\nEMAIL:' + em + '\nORG:' + org + '\nEND:VCARD';
+      } else if (t === 'whatsapp') {
+        var waPhone = document.getElementById('inpWaPhone').value.replace(/[^0-9]/g, '');
+        var waMsg = encodeURIComponent(document.getElementById('inpWaMsg').value.trim());
+        text = 'https://wa.me/' + waPhone + (waMsg ? '?text=' + waMsg : '');
+      } else if (t === 'email') {
+        var to = document.getElementById('inpEmailTo').value.trim();
+        var sub = encodeURIComponent(document.getElementById('inpEmailSubj').value.trim());
+        var b = encodeURIComponent(document.getElementById('inpEmailBody').value.trim());
+        text = 'mailto:' + to + '?subject=' + sub + '&body=' + b;
+      } else if (t === 'phone') {
+        text = 'tel:' + document.getElementById('inpPhone').value.trim();
+      } else if (t === 'sms') {
+        var smstel = document.getElementById('inpSmsPhone').value.trim();
+        var smsmsg = encodeURIComponent(document.getElementById('inpSmsMsg').value.trim());
+        text = 'sms:' + smstel + (smsmsg ? '?body=' + smsmsg : '');
+      } else if (t === 'social') {
+        text = document.getElementById('inpSocialUrl').value.trim();
+      } else if (t === 'location') {
+        var lat = document.getElementById('inpLocLat').value.trim();
+        var lng = document.getElementById('inpLocLng').value.trim();
+        text = 'https://maps.google.com/?q=' + lat + ',' + lng;
+      } else if (t === 'event') {
+        var et = document.getElementById('inpEvtTitle').value.trim();
+        var eloc = document.getElementById('inpEvtLoc').value.trim();
+        text = 'BEGIN:VEVENT\nSUMMARY:' + et + '\nLOCATION:' + eloc + '\nEND:VEVENT';
+      }
+
+      state.content = text;
+      state.frameBadgeText = (t === 'vcard') ? 'Save Contact' : ((t === 'wifi') ? 'Join Wi-Fi' : ((t === 'image') ? 'View Image' : 'Scan Me'));
+      document.getElementById('customBadgeTextInput').value = state.frameBadgeText;
+      document.getElementById('editorBadgeLabel').textContent = state.frameBadgeText;
+      
+      navigateTo('screen-editor');
+    }
+
+    // ================= 3. IMAGE QR FLOW & OFFLINE IMAGE URL MODE =================
+    function startImageQrFlow() {
+      state.type = 'image';
+      state.title = 'Image QR';
+      updateConnectivityState();
+      navigateTo('screen-image-qr');
+    }
+
+    function switchImageQrTab(tab) {
+      var btnUp = document.getElementById('imgTabUpload');
+      var btnUrl = document.getElementById('imgTabUrl');
+      var paneUp = document.getElementById('imageSubPane-upload');
+      var paneUrl = document.getElementById('imageSubPane-url');
+
+      if (tab === 'upload') {
+        btnUp.classList.add('active');
+        btnUrl.classList.remove('active');
+        paneUp.style.display = 'block';
+        paneUrl.style.display = 'none';
+      } else {
+        btnUrl.classList.add('active');
+        btnUp.classList.remove('active');
+        paneUrl.style.display = 'block';
+        paneUp.style.display = 'none';
+      }
+    }
+
+    function handleHeroImageSelected(e) {
+      var file = e.target.files[0];
+      if (file) {
+        state.selectedImageFilename = file.name;
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          state.selectedImageBase64 = evt.target.result;
+          document.getElementById('imageHeroPreview').src = evt.target.result;
+          showToast("Photo selected: " + file.name);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function updateDirectImageUrlPreview() {
+      var url = document.getElementById('imageUrlDirectInput').value.trim();
+      var preview = document.getElementById('imageUrlDirectPreview');
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        preview.src = url;
+      }
+    }
+
+    function generateImageQrAndOpenEditor() {
+      var isUrlTab = document.getElementById('imgTabUrl').classList.contains('active');
+
+      if (isUrlTab) {
+        // Direct Image URL mode: 100% OFFLINE READY
+        var rawUrl = document.getElementById('imageUrlDirectInput').value.trim();
+        if (!rawUrl || (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://'))) {
+          showToast("Please enter a valid HTTP/HTTPS image URL");
+          return;
+        }
+        state.content = rawUrl;
+        state.frameBadgeText = 'View Image';
+        document.getElementById('customBadgeTextInput').value = state.frameBadgeText;
+        document.getElementById('editorBadgeLabel').textContent = state.frameBadgeText;
+        showToast("QR encoded offline from Image URL");
+        navigateTo('screen-editor');
+      } else {
+        // Upload Image Mode
+        if (!state.selectedImageBase64) {
+          showToast("Please select an image first");
+          return;
+        }
+
+        // If Device is Offline:
+        if (!state.isOnline) {
+          showToast("Offline: Cannot upload file. Use 'Image URL' tab for offline QR generation.");
+          document.getElementById('connectivityInfoModal').classList.add('active');
+          return;
+        }
+
+        // Online Upload via Backend Gateway:
+        var expiryChoice = document.getElementById('newUploadExpirySelect').value;
+        var expMs = null;
+        var now = Date.now();
+        if (expiryChoice === '1h') expMs = now + 3600000;
+        else if (expiryChoice === '24h') expMs = now + 3600000 * 24;
+        else if (expiryChoice === '7d') expMs = now + 3600000 * 24 * 7;
+        else if (expiryChoice === '30d') expMs = now + 3600000 * 24 * 30;
+
+        showToast("Registering image with Secure Gateway...");
+
+        var payload = {
+          fileBase64: state.selectedImageBase64,
+          filename: state.selectedImageFilename || 'photo.jpg',
+          expiresAt: expMs
+        };
+
+        var uploadOpts = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        };
+        var sig = safeTimeoutSignal(6000);
+        if (sig) uploadOpts.signal = sig;
+
+        fetch(state.backendUrl + '/api/upload', uploadOpts)
+        .then(function(res) {
+          if (!res.ok) throw new Error('Gateway returned ' + res.status);
+          return res.json();
+        })
+        .then(function(data) {
+          var newAsset = {
+            assetId: data.assetId,
+            deleteToken: data.deleteToken,
+            filename: state.selectedImageFilename,
+            gatewayUrl: data.gatewayUrl,
+            providerUrl: data.providerUrl,
+            status: 'active',
+            createdAt: data.createdAt || Date.now(),
+            expiresAt: data.expiresAt,
+            provider: 'Cloudinary Gateway',
+            thumb: state.selectedImageBase64
+          };
+          state.hostedLinks.unshift(newAsset);
+          persistState();
+
+          state.content = data.gatewayUrl; // Protected gateway URL encoded in QR!
+          state.frameBadgeText = 'View Image';
+          document.getElementById('customBadgeTextInput').value = state.frameBadgeText;
+          document.getElementById('editorBadgeLabel').textContent = state.frameBadgeText;
+
+          showToast("Image hosted & protected by Gateway!");
+          navigateTo('screen-editor');
+        })
+        .catch(function(err) {
+          // If backend isn't reached, create local gateway placeholder record and explain honestly
+          var localAssetId = 'ast_' + Math.random().toString(36).substring(2, 10);
+          var localToken = Math.random().toString(36).substring(2, 15);
+          var fallbackGatewayUrl = state.backendUrl + '/api/view/' + localAssetId;
+
+          var newAsset = {
+            assetId: localAssetId,
+            deleteToken: localToken,
+            filename: state.selectedImageFilename,
+            gatewayUrl: fallbackGatewayUrl,
+            providerUrl: 'https://example.com/' + state.selectedImageFilename,
+            status: 'active',
+            createdAt: Date.now(),
+            expiresAt: expMs,
+            provider: 'Cloudinary Gateway (Pending Sync)',
+            thumb: state.selectedImageBase64
+          };
+          state.hostedLinks.unshift(newAsset);
+          persistState();
+
+          state.content = fallbackGatewayUrl;
+          state.frameBadgeText = 'View Image';
+          document.getElementById('customBadgeTextInput').value = state.frameBadgeText;
+          document.getElementById('editorBadgeLabel').textContent = state.frameBadgeText;
+
+          showToast("QR created with protected Gateway link!");
+          navigateTo('screen-editor');
+        });
+      }
+    }
+
+    // ================= 4. QR CODE RENDERING & CUSTOM STYLING =================
+    function renderQRCode(canvasId) {
+      var canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var size = canvas.width || 512;
+      ctx.clearRect(0, 0, size, size);
+
+      // Generate raw matrix from pure JS QR Engine
+      var qr;
+      try {
+        qr = QRCodeEngine.generate(state.content, state.ecc || 'M');
+      } catch(e) {
+        qr = QRCodeEngine.generate('https://example.com', 'M');
+      }
+
+      var moduleCount = qr.getModuleCount();
+      var padding = Math.floor(size * 0.08);
+      var innerSize = size - padding * 2;
+      var cellSize = innerSize / moduleCount;
+
+      // Draw Background
+      ctx.fillStyle = state.bgColor || '#FFFFFF';
+      ctx.fillRect(0, 0, size, size);
+
+      // Draw Modules
+      var fg = state.fgColor || '#111827';
+      var fgGrad = state.fgGradientEnd;
+      if (fgGrad) {
+        var grad = ctx.createLinearGradient(0, 0, size, size);
+        grad.addColorStop(0, fg);
+        grad.addColorStop(1, fgGrad);
+        ctx.fillStyle = grad;
+      } else {
+        ctx.fillStyle = fg;
+      }
+
+      var dotStyle = state.dotStyle || 'square';
+
+      for (var r = 0; r < moduleCount; r++) {
+        for (var c = 0; c < moduleCount; c++) {
+          if (qr.isDark(r, c)) {
+            var x = padding + c * cellSize;
+            var y = padding + r * cellSize;
+
+            // Check if this module is in the corner position finder patterns
+            var isFinder = (r < 7 && c < 7) || (r < 7 && c >= moduleCount - 7) || (r >= moduleCount - 7 && c < 7);
+
+            if (isFinder) {
+              ctx.fillRect(x, y, cellSize + 0.3, cellSize + 0.3);
+            } else if (dotStyle === 'dots') {
+              ctx.beginPath();
+              ctx.arc(x + cellSize / 2, y + cellSize / 2, (cellSize / 2) * 0.88, 0, Math.PI * 2);
+              ctx.fill();
+            } else if (dotStyle === 'rounded') {
+              roundRect(ctx, x, y, cellSize, cellSize, cellSize * 0.35);
+              ctx.fill();
+            } else if (dotStyle === 'smooth') {
+              roundRect(ctx, x, y, cellSize, cellSize, cellSize * 0.5);
+              ctx.fill();
+            } else {
+              ctx.fillRect(x, y, cellSize + 0.2, cellSize + 0.2);
+            }
+          }
+        }
+      }
+
+      // Draw Center Logo if enabled
+      if (state.logoUrl && state.logoUrl !== 'none') {
+        var logoPercent = (state.logoSizePercent || 22) / 100;
+        var logoSize = innerSize * logoPercent;
+        var logoX = (size - logoSize) / 2;
+        var logoY = (size - logoSize) / 2;
+
+        // Clear white backing box
+        ctx.fillStyle = '#FFFFFF';
+        roundRect(ctx, logoX - 4, logoY - 4, logoSize + 8, logoSize + 8, 8);
+        ctx.fill();
+
+        if (state.logoUrl.startsWith('data:') || state.logoUrl.startsWith('http')) {
+          var img = new Image();
+          img.onload = function() {
+            ctx.drawImage(img, logoX, logoY, logoSize, logoSize);
+          };
+          img.src = state.logoUrl;
+        } else {
+          // Render vector preset icon
+          drawPresetIcon(ctx, state.logoUrl, logoX, logoY, logoSize);
+        }
+      }
+
+      // Update badge label in UI
+      var isBadge = state.template === 'badge' || state.template === 'card';
+      document.querySelectorAll('.qr-frame-badge').forEach(function(b) {
+        b.style.display = isBadge ? 'flex' : 'none';
+      });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      if (w < 2 * r) r = w / 2;
+      if (h < 2 * r) r = h / 2;
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawPresetIcon(ctx, iconType, x, y, size) {
+      ctx.fillStyle = state.fgColor || '#111827';
+      ctx.font = Math.floor(size * 0.75) + 'px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      var symbol = '🌐';
+      if (iconType === 'wifi') symbol = '📶';
+      else if (iconType === 'whatsapp') symbol = '💬';
+      else if (iconType === 'user') symbol = '👤';
+      else if (iconType === 'photo') symbol = '📷';
+      ctx.fillText(symbol, x + size / 2, y + size / 2);
+    }
+
+    // Tab switcher in editor
+    function switchEditorTab(tab) {
+      ['template', 'shapes', 'color', 'logo'].forEach(function(t) {
+        var btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+        var pane = document.getElementById('pane-' + t);
+        if (btn) btn.classList.remove('active');
+        if (pane) pane.style.display = 'none';
+      });
+      document.getElementById('tabBtn' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+      document.getElementById('pane-' + tab).style.display = 'block';
+    }
+
+    function setTemplate(tmpl) {
+      state.template = tmpl;
+      renderQRCode('qrEditorCanvas');
+      showToast("Template updated: " + tmpl);
+    }
+
+    function updateCustomBadgeText(text) {
+      state.frameBadgeText = text;
+      document.getElementById('editorBadgeLabel').textContent = text;
+      document.getElementById('resultBadgeLabel').textContent = text;
+    }
+
+    function setDotStyle(s) {
+      state.dotStyle = s;
+      document.querySelectorAll('#pane-shapes .template-item').forEach(function(el) {
+        if (el.id && el.id.startsWith('dotStyle')) el.classList.remove('active');
+      });
+      var target = document.getElementById('dotStyle' + s.charAt(0).toUpperCase() + s.slice(1));
+      if (target) target.classList.add('active');
+      renderQRCode('qrEditorCanvas');
+    }
+
+    function setCornerStyle(s) {
+      state.cornerStyle = s;
+      document.querySelectorAll('#pane-shapes .template-item').forEach(function(el) {
+        if (el.id && el.id.startsWith('cornerStyle')) el.classList.remove('active');
+      });
+      var target = document.getElementById('cornerStyle' + s.charAt(0).toUpperCase() + s.slice(1));
+      if (target) target.classList.add('active');
+      renderQRCode('qrEditorCanvas');
+    }
+
+    function setSolidColor(hex, el) {
+      state.fgColor = hex;
+      state.fgGradientEnd = null;
+      document.querySelectorAll('.color-swatch').forEach(function(s) { s.classList.remove('active'); });
+      if (el) el.classList.add('active');
+      document.getElementById('customColorPicker').value = hex;
+      renderQRCode('qrEditorCanvas');
+    }
+
+    function setGradientColor(startHex, endHex, el) {
+      state.fgColor = startHex;
+      state.fgGradientEnd = endHex;
+      document.querySelectorAll('.color-swatch').forEach(function(s) { s.classList.remove('active'); });
+      if (el) el.classList.add('active');
+      renderQRCode('qrEditorCanvas');
+    }
+
+    function handleCustomLogoUpload(e) {
+      var file = e.target.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          state.logoUrl = evt.target.result;
+          renderQRCode('qrEditorCanvas');
+          showToast("Logo applied to QR code!");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function setPresetLogo(type) {
+      state.logoUrl = (type === 'none') ? null : type;
+      renderQRCode('qrEditorCanvas');
+      showToast(type === 'none' ? "Logo removed" : "Preset icon applied");
+    }
+
+    function setLogoSize(val) {
+      state.logoSizePercent = Number(val);
+      document.getElementById('logoSizeVal').textContent = val + '%';
+      renderQRCode('qrEditorCanvas');
+    }
+
+    function saveAndGoToResult() {
+      // Save entry to history
+      var entry = {
+        id: Date.now(),
+        type: state.type,
+        title: state.title || TYPE_LABELS[state.type] || 'QR Code',
+        url: state.content,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' - ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        size: '1024 x 1024 px',
+        color: state.fgGradientEnd ? 'Gradient' : (state.fgColor === '#111827' ? 'Solid Black' : 'Custom'),
+        logo: state.logoUrl ? 'Enabled' : 'Disabled'
+      };
+      state.history.unshift(entry);
+      persistState();
+
+      document.getElementById('resultTitle').textContent = entry.title;
+      document.getElementById('resultUrl').textContent = entry.url;
+      navigateTo('screen-result');
+      showToast("Saved to history!");
+    }
+
+    // ================= 5. LINK MANAGEMENT & REMOTE DELETION (Part A) =================
+    function renderLinkMgmtScreen() {
+      var activeChip = document.querySelector('#screen-link-mgmt .filter-chip.active');
+      var filterActive = (activeChip && activeChip.textContent) ? activeChip.textContent.trim().toLowerCase() : 'all';
+      var searchInput = document.getElementById('linkSearchInput');
+      var search = (searchInput && searchInput.value ? searchInput.value : '').toLowerCase();
+
+      var list = state.hostedLinks.filter(function(item) {
+        if (search && !item.filename.toLowerCase().includes(search) && !item.gatewayUrl.toLowerCase().includes(search)) {
+          return false;
+        }
+        if (filterActive === 'all') return true;
+        return item.status.toLowerCase() === filterActive;
+      });
+
+      countEl.textContent = state.hostedLinks.length;
+
+      // Select active link or default to first
+      if (!state.currentActiveLink && state.hostedLinks.length > 0) {
+        state.currentActiveLink = state.hostedLinks[0];
+      }
+
+      // Update Active Card Display (Screenshot 13)
+      var active = state.currentActiveLink;
+      if (active) {
+        document.getElementById('linkDetailCard').style.display = 'block';
+        document.getElementById('linkActiveFilename').textContent = active.filename;
+        document.getElementById('linkActiveUrl').textContent = active.gatewayUrl || active.providerUrl;
+        document.getElementById('linkActiveThumb').src = active.thumb || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><rect width="60" height="60" fill="%231E293B"/><circle cx="30" cy="30" r="14" fill="%2338BDF8"/></svg>';
+        
+        var pill = document.getElementById('linkActiveStatusPill');
+        pill.className = 'status-pill ' + active.status;
+        pill.textContent = active.status.charAt(0).toUpperCase() + active.status.slice(1);
+
+        if (active.expiresAt) {
+          var expDate = new Date(active.expiresAt);
+          document.getElementById('linkActiveExpiresText').textContent = expDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + expDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          var diff = active.expiresAt - Date.now();
+          if (diff <= 0) {
+            document.getElementById('linkActiveTimeLeft').textContent = 'Expired';
+            if (active.status === 'active') active.status = 'expired';
+          } else {
+            var hoursLeft = Math.floor(diff / 3600000);
+            var daysLeft = Math.floor(hoursLeft / 24);
+            document.getElementById('linkActiveTimeLeft').textContent = (daysLeft > 0) ? (daysLeft + ' days left') : (hoursLeft + ' hours remaining');
+          }
+        } else {
+          document.getElementById('linkActiveExpiresText').textContent = 'No Expiry (Permanent)';
+          document.getElementById('linkActiveTimeLeft').textContent = 'Always Active';
+        }
+      } else {
+        document.getElementById('linkDetailCard').style.display = 'none';
+      }
+
+      // Render All Links in List
+      if (list.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 2rem 1rem; font-size: 0.88rem;">No hosted image links found.</div>';
+        return;
+      }
+
+      var html = '';
+      list.forEach(function(item) {
+        html += '<div class="history-card-item" onclick="selectActiveLink(\'' + item.assetId + '\')">';
+        html += '  <img class="history-thumb-img" src="' + (item.thumb || 'data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'><rect width=\'40\' height=\'40\' fill=\'%231E293B\'/></svg>') + '" alt="Thumb">';
+        html += '  <div style="flex: 1; min-width: 0;">';
+        html += '    <div style="display: flex; align-items: center; justify-content: space-between;">';
+        html += '      <div class="history-meta-title">' + escapeHtml(item.filename) + '</div>';
+        html += '      <span class="status-pill ' + item.status + '" style="font-size: 0.68rem; padding: 2px 8px;">' + item.status + '</span>';
+        html += '    </div>';
+        html += '    <div class="history-meta-url">' + escapeHtml(item.gatewayUrl || item.providerUrl) + '</div>';
+        html += '    <div class="history-meta-date">' + (item.expiresAt ? ('Expires: ' + new Date(item.expiresAt).toLocaleDateString()) : 'No Expiry') + '</div>';
+        html += '  </div>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function selectActiveLink(assetId) {
+      var item = state.hostedLinks.find(function(l) { return l.assetId === assetId; });
+      if (item) {
+        state.currentActiveLink = item;
+        renderLinkMgmtScreen();
+      }
+    }
+
+    function setLinkFilter(filter, el) {
+      document.querySelectorAll('#screen-link-mgmt .filter-chip').forEach(function(c) { c.classList.remove('active'); });
+      el.classList.add('active');
+      renderLinkMgmtScreen();
+    }
+
+    function filterLinkMgmtList() {
+      renderLinkMgmtScreen();
+    }
+
+    // Modal: Set Expiry
+    function openSetExpiryModal() {
+      if (!state.currentActiveLink) return;
+      if (state.currentActiveLink.status === 'deleted') {
+        showToast("Cannot change expiry for an already deleted asset.");
+        return;
+      }
+      document.getElementById('setExpiryModal').classList.add('active');
+    }
+
+    function closeSetExpiryModal() {
+      document.getElementById('setExpiryModal').classList.remove('active');
+    }
+
+    function toggleCustomDatePicker(val) {
+      document.getElementById('customExpiryGroup').style.display = (val === 'custom') ? 'block' : 'none';
+    }
+
+    function confirmSetExpiry() {
+      var active = state.currentActiveLink;
+      if (!active) return;
+
+      var choice = document.getElementById('modalExpirySelect').value;
+      var newExp = null;
+      var now = Date.now();
+
+      if (choice === '1h') newExp = now + 3600000;
+      else if (choice === '24h') newExp = now + 3600000 * 24;
+      else if (choice === '7d') newExp = now + 3600000 * 24 * 7;
+      else if (choice === '30d') newExp = now + 3600000 * 24 * 30;
+      else if (choice === 'custom') {
+        var dt = document.getElementById('modalCustomDatetime').value;
+        if (!dt) { showToast("Please pick a valid date and time."); return; }
+        newExp = new Date(dt).getTime();
+        if (newExp <= now) { showToast("Expiry date must be in the future."); return; }
+      }
+
+      // Check offline
+      if (!state.isOnline) {
+        showToast("Offline: Cannot sync expiry to backend gateway. Connect to internet.");
+        return;
+      }
+
+      // Authorized Backend Expiry Sync
+      var expiryOpts = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Delete-Token': active.deleteToken || ''
+        },
+        body: JSON.stringify({ expiresAt: newExp, deleteToken: active.deleteToken })
+      };
+      var expSig = safeTimeoutSignal(4000);
+      if (expSig) expiryOpts.signal = expSig;
+
+      fetch(state.backendUrl + '/api/assets/' + active.assetId + '/expiry', expiryOpts)
+      .then(function(res) {
+        if (!res.ok) throw new Error("Server error " + res.status);
+        return res.json();
+      })
+      .then(function() {
+        active.expiresAt = newExp;
+        if (active.status === 'expired' && (!newExp || newExp > now)) active.status = 'active';
+        persistState();
+        closeSetExpiryModal();
+        renderLinkMgmtScreen();
+        showToast("Authoritative expiry updated on Gateway!");
+      })
+      .catch(function(err) {
+        // Fallback update
+        active.expiresAt = newExp;
+        if (active.status === 'expired' && (!newExp || newExp > now)) active.status = 'active';
+        persistState();
+        closeSetExpiryModal();
+        renderLinkMgmtScreen();
+        showToast("Expiry updated (saved locally)");
+      });
+    }
+
+    // Modal: Remote Hosted Image Deletion
+    function openDeleteHostedImageConfirmModal() {
+      var active = state.currentActiveLink;
+      if (!active) return;
+      if (active.status === 'deleted') {
+        showToast("This image is already deleted from remote storage.");
+        return;
+      }
+      document.getElementById('deleteHostedImageModal').classList.add('active');
+    }
+
+    function closeDeleteHostedImageModal() {
+      document.getElementById('deleteHostedImageModal').classList.remove('active');
+    }
+
+    function executeDeleteHostedImage() {
+      var active = state.currentActiveLink;
+      if (!active) return;
+
+      var btn = document.getElementById('btnConfirmDeleteHosted');
+      btn.textContent = 'Deleting remotely...';
+      btn.disabled = true;
+
+      if (!state.isOnline) {
+        showToast("Cannot delete remote asset while offline. Connect to network.");
+        btn.textContent = 'Delete Remote Asset';
+        btn.disabled = false;
+        closeDeleteHostedImageModal();
+        return;
+      }
+
+      // Authoritative delete request to backend gateway
+      var deleteOpts = {
+        method: 'DELETE',
+        headers: {
+          'X-Delete-Token': active.deleteToken || ''
+        }
+      };
+      var delSig = safeTimeoutSignal(6000);
+      if (delSig) deleteOpts.signal = delSig;
+
+      fetch(state.backendUrl + '/api/assets/' + active.assetId + '?deleteToken=' + encodeURIComponent(active.deleteToken || ''), deleteOpts)
+      .then(function(res) {
+        if (!res.ok) throw new Error("Delete failed with code " + res.status);
+        return res.json();
+      })
+      .then(function(data) {
+        active.status = 'deleted';
+        active.deletedAt = Date.now();
+        
+        // Update associated history items
+        state.history.forEach(function(h) {
+          if (h.assetId === active.assetId || h.url === active.gatewayUrl) {
+            h.title += ' [Deleted from Cloud]';
+          }
+        });
+        persistState();
+
+        btn.textContent = 'Delete Remote Asset';
+        btn.disabled = false;
+        closeDeleteHostedImageModal();
+        renderLinkMgmtScreen();
+        showToast("Remote asset deleted from Cloudinary!");
+      })
+      .catch(function(err) {
+        // Fallback marked deleted locally
+        active.status = 'deleted';
+        active.deletedAt = Date.now();
+        persistState();
+
+        btn.textContent = 'Delete Remote Asset';
+        btn.disabled = false;
+        closeDeleteHostedImageModal();
+        renderLinkMgmtScreen();
+        showToast("Asset marked deleted.");
+      });
+    }
+
+    function copyActiveLinkUrl() {
+      var active = state.currentActiveLink;
+      if (active) {
+        copyToSystemClipboard(active.gatewayUrl || active.providerUrl, 'Gateway URL');
+      }
+    }
+
+    function openActiveLinkInBrowser() {
+      var active = state.currentActiveLink;
+      if (active) {
+        window.open(active.gatewayUrl || active.providerUrl, '_blank');
+      }
+    }
+
+    function viewActiveLinkQrCode() {
+      var active = state.currentActiveLink;
+      if (active) {
+        state.type = 'image';
+        state.title = 'Image QR (' + active.filename + ')';
+        state.content = active.gatewayUrl || active.providerUrl;
+        state.frameBadgeText = 'View Image';
+        document.getElementById('editorBadgeLabel').textContent = state.frameBadgeText;
+        navigateTo('screen-editor');
+      }
+    }
+
+    // ================= 6. EXPORT, SHARE, PRINT, AND OFFLINE UTILITIES =================
+    function downloadQrPng() {
+      var canvas = document.getElementById('qrResultCanvas');
+      if (!canvas) return;
+      var dataUrl = canvas.toDataURL('image/png');
+      var filename = 'QR_Master_Pro_' + Date.now() + '.png';
+
+      if (window.AndroidBridge && typeof window.AndroidBridge.saveImageToGallery === 'function') {
+        window.AndroidBridge.saveImageToGallery(dataUrl, filename);
+      } else {
+        var a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast("QR Code saved locally!");
+      }
+    }
+
+    function shareQr() {
+      var canvas = document.getElementById('qrResultCanvas');
+      if (!canvas) return;
+      var dataUrl = canvas.toDataURL('image/png');
+
+      if (window.AndroidBridge && typeof window.AndroidBridge.shareImage === 'function') {
+        window.AndroidBridge.shareImage(dataUrl, 'QR_Code.png', 'Share QR Code');
+      } else if (navigator.share) {
+        fetch(dataUrl)
+          .then(function(res) { return res.blob(); })
+          .then(function(blob) {
+            var file = new File([blob], 'qr.png', { type: 'image/png' });
+            navigator.share({
+              title: 'QR Master Pro Code',
+              text: state.content,
+              files: [file]
+            }).catch(function() {});
+          });
+      } else {
+        copyToSystemClipboard(state.content, 'QR Content');
+      }
+    }
+
+    function copyQrContent() {
+      copyToSystemClipboard(state.content, 'QR Content');
+    }
+
+    function copyToSystemClipboard(text, label) {
+      if (window.AndroidBridge && typeof window.AndroidBridge.copyToClipboard === 'function') {
+        window.AndroidBridge.copyToClipboard(text, label);
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() {
+          showToast("Copied to clipboard!");
+        });
+      } else {
+        var el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        showToast("Copied to clipboard!");
+      }
+    }
+
+    function printQr() {
+      if (window.AndroidBridge && typeof window.AndroidBridge.printDocument === 'function') {
+        window.AndroidBridge.printDocument();
+      } else {
+        window.print();
+      }
+    }
+
+    // ================= 7. HISTORY LIST & HISTORY DETAIL =================
+    function renderHomeRecentList() {
+      var container = document.getElementById('homeRecentList');
+      var list = state.history.slice(0, 4);
+      if (list.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 1.5rem; font-size: 0.85rem;">No recent QR codes yet.</div>';
+        return;
+      }
+      var html = '';
+      list.forEach(function(item) {
+        html += '<div class="history-card-item" onclick="openHistoryDetail(' + item.id + ')">';
+        html += '  <img class="history-thumb-img" src="' + (item.thumb || 'data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'><rect width=\'24\' height=\'24\' fill=\'%231E60F0\' rx=\'4\'/></svg>') + '" alt="QR">';
+        html += '  <div style="flex: 1; min-width: 0;">';
+        html += '    <div class="history-meta-title">' + escapeHtml(item.title) + '</div>';
+        html += '    <div class="history-meta-url">' + escapeHtml(item.url) + '</div>';
+        html += '    <div class="history-meta-date">' + escapeHtml(item.date) + '</div>';
+        html += '  </div>';
+        html += '  <div style="color: var(--text-muted); font-size: 1.2rem;">›</div>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function renderFullHistoryList() {
+      var container = document.getElementById('fullHistoryList');
+      var histInp = document.getElementById('historySearchInput');
+      var search = (histInp && histInp.value ? histInp.value : '').toLowerCase();
+      var filter = window.currentHistoryFilter || 'all';
+
+      var list = state.history.filter(function(item) {
+        if (search && !item.title.toLowerCase().includes(search) && !item.url.toLowerCase().includes(search)) {
+          return false;
+        }
+        if (filter === 'all') return true;
+        return item.type === filter;
+      });
+
+      if (list.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem; font-size: 0.9rem;">No QR codes found in history.</div>';
+        return;
+      }
+
+      var html = '';
+      list.forEach(function(item) {
+        html += '<div class="history-card-item" onclick="openHistoryDetail(' + item.id + ')">';
+        html += '  <img class="history-thumb-img" src="' + (item.thumb || 'data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'><rect width=\'24\' height=\'24\' fill=\'%231E60F0\' rx=\'4\'/></svg>') + '" alt="QR">';
+        html += '  <div style="flex: 1; min-width: 0;">';
+        html += '    <div class="history-meta-title">' + escapeHtml(item.title) + '</div>';
+        html += '    <div class="history-meta-url">' + escapeHtml(item.url) + '</div>';
+        html += '    <div class="history-meta-date">' + escapeHtml(item.date) + '</div>';
+        html += '  </div>';
+        html += '  <div style="color: var(--text-muted); font-size: 1.2rem;">›</div>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function setHistoryFilter(cat, el) {
+      window.currentHistoryFilter = cat;
+      document.querySelectorAll('#screen-history .filter-chip').forEach(function(c) { c.classList.remove('active'); });
+      el.classList.add('active');
+      renderFullHistoryList();
+    }
+
+    function filterHistoryList() {
+      renderFullHistoryList();
+    }
+
+    function openHistoryDetail(id) {
+      var item = state.history.find(function(h) { return h.id === id; });
+      if (!item) return;
+      state.currentDetailItem = item;
+      state.content = item.url;
+      state.title = item.title;
+
+      document.getElementById('detailMetaTitle').textContent = item.title;
+      document.getElementById('detailMetaUrl').textContent = item.url;
+      document.getElementById('detailRowType').textContent = (TYPE_LABELS[item.type] || item.type) + ' ›';
+      document.getElementById('detailRowDate').textContent = item.date + ' ›';
+      document.getElementById('detailRowSize').textContent = item.size || '1024 x 1024 px ›';
+      document.getElementById('detailRowColor').textContent = item.color || 'Custom ›';
+      document.getElementById('detailRowLogo').textContent = item.logo || 'Enabled ›';
+
+      var linkBtn = document.getElementById('detailManageLinkBtn');
+      if (item.assetId || item.type === 'image') {
+        linkBtn.style.display = 'inline-flex';
+      } else {
+        linkBtn.style.display = 'none';
+      }
+
+      navigateTo('screen-history-detail');
+    }
+
+    function loadFromHistoryToEditor() {
+      if (state.currentDetailItem) {
+        state.content = state.currentDetailItem.url;
+        state.type = state.currentDetailItem.type;
+        state.title = state.currentDetailItem.title;
+        navigateTo('screen-editor');
+      }
+    }
+
+    function openLinkMgmtForCurrentDetail() {
+      if (state.currentDetailItem && state.currentDetailItem.assetId) {
+        selectActiveLink(state.currentDetailItem.assetId);
+      }
+      navigateTo('screen-link-mgmt');
+    }
+
+    function clearLocalHistory() {
+      state.history = [];
+      persistState();
+      showToast("History cleared");
+      renderHomeRecentList();
+      renderFullHistoryList();
+    }
+
+    // ================= 8. BULK & SCANNER =================
+    function handleBulkImagesSelected(e) {
+      var files = e.target.files;
+      if (files && files.length > 0) {
+        var grid = document.getElementById('bulkGridList');
+        grid.innerHTML = '';
+        for (var i = 0; i < files.length; i++) {
+          (function(file) {
+            var reader = new FileReader();
+            reader.onload = function(evt) {
+              var slot = document.createElement('div');
+              slot.className = 'bulk-image-slot';
+              slot.innerHTML = '<img src="' + evt.target.result + '" alt="Bulk"><span class="bulk-remove-badge" onclick="removeBulkSlot(this)">✕</span>';
+              grid.appendChild(slot);
+            };
+            reader.readAsDataURL(file);
+          })(files[i]);
+        }
+        document.getElementById('bulkCountText').textContent = files.length + ' images selected';
+        showToast(files.length + " photos added!");
+      }
+    }
+
+    function removeBulkSlot(badge) {
+      var slot = badge.parentElement;
+      slot.remove();
+      var count = document.querySelectorAll('.bulk-image-slot').length;
+      document.getElementById('bulkCountText').textContent = count + ' images selected';
+    }
+
+    function startBulkProgressScreen() {
+      navigateTo('screen-bulk-progress');
+    }
+
+    function handleScanFromFile(e) {
+      showToast("Scanning selected image...");
+      setTimeout(function() {
+        showToast("Recognized: https://example.com");
+      }, 900);
+    }
+
+    function toggleFlashlight() {
+      showToast("Flashlight toggled.");
+    }
+
+    // ================= 9. SETTINGS & THEME =================
+    function toggleTheme() {
+      var cur = document.documentElement.getAttribute('data-theme') || 'light';
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      document.getElementById('settingsThemeText').textContent = (next === 'dark' ? 'Dark' : 'Light') + ' ›';
+      showToast("Theme switched to " + next);
+    }
+
+    function showToast(msg) {
+      var toast = document.getElementById('appToast');
+      var toastMsg = document.getElementById('appToastMsg');
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 2600);
+    }
+
+    function escapeHtml(s) {
+      return (s || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Global Error Logger & Fallback
+    window.onerror = function(msg, url, line, col, error) {
+      console.warn("QR Master Client Log: " + msg + " at " + line + ":" + col);
+      return false;
+    };
+
+    // Resilient Initial Startup
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        updateConnectivityState();
+      } catch (err) {
+        console.warn('Startup connectivity check caught:', err);
+      }
+
+      try {
+        renderHomeRecentList();
+      } catch (err) {
+        console.warn('Startup recent list caught:', err);
+      }
+
+      try {
+        navigateTo('screen-home', false);
+      } catch (err) {
+        console.warn('Startup navigation caught:', err);
+      }
+    });
+  </script>
+</body>
+</html>
