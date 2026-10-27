@@ -1,5 +1,5 @@
 
-name: Build QR Master Pro APK
+name: Build QR Master Pro Release APK
 
 on:
   workflow_dispatch:
@@ -26,15 +26,26 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 'latest'
 
-      - name: Build APK
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager --version
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Build Release APK
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon assembleDebug
+          ./gradlew --no-daemon assembleRelease
 
-      - name: Upload APK
+      - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: QR-Master-Pro-APK
-          path: app/build/outputs/apk/debug/*.apk
+          name: QR-Master-Pro-Release-APK
+          path: app/build/outputs/apk/release/*.apk
           if-no-files-found: error
